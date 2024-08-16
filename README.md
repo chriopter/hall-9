@@ -6,6 +6,7 @@ HomeAssistant Local LLM Voice Interface
 - MAX98357 Amplifier for Speaker
 - 4 / 8 Ohm Sepaker
 - inmp441 Microphone (in Stereo for this project)
+- SSD1306 Display (Optional)
 - LD2410 Radar (Optional Sensor)
 - DHT22 Thermometer (Optional Sensor)
 
