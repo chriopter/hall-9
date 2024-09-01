@@ -6,7 +6,7 @@
     "model": "./darth_vader.tflite",
     "version": 1,
     "micro": {
-        "probability_cutoff": 0.97,
-        "sliding_window_size": 10
+    "probability_cutoff": 0.97,
+    "sliding_window_size": 10
     }
 }
