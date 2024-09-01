@@ -1,0 +1,12 @@
+{
+    "type": "micro",
+    "wake_word": "darth vader",
+    "author": "Testing",
+    "website": "https://github.com/chriopter/hall-9/",
+    "model": "./darth_vader.tflite",
+    "version": 1,
+    "micro": {
+        "probability_cutoff": 0.97,
+        "sliding_window_size": 10
+    }
+}
