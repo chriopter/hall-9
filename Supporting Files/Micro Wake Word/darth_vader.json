@@ -2,7 +2,7 @@
   "type": "micro",
   "wake_word": "darth vader",
   "author": "Kevin Ahrendt",
-  "website": "https://www.kevinahrendt.com/",
+  "website": "https://github.com/chriopter/hall-9/",
   "model": "./darth_vader.tflite",
   "version": 1,
   "micro": {
