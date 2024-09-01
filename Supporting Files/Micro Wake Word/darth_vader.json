@@ -1,6 +1,6 @@
 {
   "type": "micro",
-  "wake_word": "okay nabu",
+  "wake_word": "darth vader",
   "author": "Kevin Ahrendt",
   "website": "https://www.kevinahrendt.com/",
   "model": "./darth_vader.tflite",
