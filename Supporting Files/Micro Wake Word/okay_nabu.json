@@ -3,7 +3,7 @@
   "wake_word": "okay nabu",
   "author": "Kevin Ahrendt",
   "website": "https://www.kevinahrendt.com/",
-  "model": "./okay_nabu.tflite",
+  "model": "./darth_vader.tflite",
   "version": 1,
   "micro": {
     "probability_cutoff": 0.5,
