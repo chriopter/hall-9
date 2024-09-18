@@ -5,7 +5,7 @@ HomeAssistant Local LLM Voice Interface
 - ESP32-S3 Compatible with local Wake Word Detection
 - MAX98357 Amplifier for Speaker
 - 4 / 8 Ohm Sepaker
-- inmp441 Microphone (in Stereo for this project)
+- inmp441 Microphone
 - SSD1306 Display (Optional)
 - LD2410 Radar (Optional Sensor)
 - DHT22 Thermometer (Optional Sensor)
