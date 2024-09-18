@@ -12,3 +12,6 @@ HomeAssistant Local LLM Voice Interface
 
 ## Bench Case
 For Dev purposes, use Bench Case 
+
+## Future Developments
+- https://github.com/esphome/feature-requests/issues/2562
