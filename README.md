@@ -18,9 +18,15 @@ For Dev purposes, use Bench Case
 
 # Setup
 
+## Hardware
+- Wire up according to Pinout in YAML Code
+
 ## HA
 - Instal Add-On Whisper for Speech to Text
 - Install Add-On Piper for Text to Speech
 - Both configured via Wyoming
 - Use LLM of choice via Add On (e.g. Ollama via Network or ChatGPT)
 - Configure Assistant Pipeline in HA
+
+## ESPHome
+- Deploy Code on ESP32
