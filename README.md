@@ -31,3 +31,4 @@ For Dev purposes, use Bench Case
 
 ## ESPHome
 - Deploy Code on ESP32
+- Set Detect end of speaking detection to aggressive 
