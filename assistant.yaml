@@ -204,6 +204,7 @@ i2c:
   sda: GPIO16  # Adjust according to your board
   scl: GPIO15  # Adjust according to your board
   scan: true
+  frequency: 400kHz
 
 # OLED display configuration
 display:
