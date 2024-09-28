@@ -48,7 +48,7 @@ ota:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-  output_power: 8.5
+  # Fix output power if connection problems with   output_power: 8.5
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
