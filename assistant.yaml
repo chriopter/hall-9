@@ -211,6 +211,7 @@ display:
     model: "SSD1306 128x64"
     rotation: 0
     address: 0x3C  # Default I2C address for SSD1306
+    update_interval: 5s
     lambda: |-
       // Print time in HH:MM format
       it.strftime(0, 60, id(font1), TextAlign::BASELINE_LEFT, "%H:%M", id(esptime).now());
