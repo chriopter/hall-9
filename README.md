@@ -27,6 +27,7 @@ For Dev purposes, use Bench Case
 - Both configured via Wyoming
 - Use LLM of choice via Add On (e.g. Ollama via Network or ChatGPT)
 - Configure Assistant Pipeline in HA
+- Place Font ttf in /config/esphome/ and adjust ESP yaml accordingly
 
 ## ESPHome
 - Deploy Code on ESP32
