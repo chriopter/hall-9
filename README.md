@@ -1,4 +1,4 @@
-# hall-9
+# hall-9 Overview
 HomeAssistant Local LLM Voice Interface
 
 ## Parts 
@@ -15,3 +15,9 @@ For Dev purposes, use Bench Case
 
 ## Future Developments
 - https://github.com/esphome/feature-requests/issues/2562
+
+# Setup
+
+## HA
+- Install Piper
+- Use LLM of choice via Add On (e.g. Ollama via Network or ChatGPT)
