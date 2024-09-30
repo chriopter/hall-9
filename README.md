@@ -20,6 +20,7 @@ For Dev purposes, use Bench Case
 
 ## Hardware
 - Wire up according to Pinout in YAML Code
+- 5v for MAX98357 needed (may be provided by ESP32-S3 Board depending on model)
 
 ## HA
 - Instal Add-On Whisper for Speech to Text
