@@ -15,6 +15,7 @@ For Dev purposes, use Bench Case
 
 ## Future Developments
 - https://github.com/esphome/feature-requests/issues/2562
+- https://community.home-assistant.io/t/voice-assistant-wake-word-media-player/634984/9
 
 # Setup
 
