@@ -13,6 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build ESPHome firmware
-        uses: esphome/build-action@latest
+        uses: esphome/build-action@main
         with:
           yaml_file: hall-9.yaml
