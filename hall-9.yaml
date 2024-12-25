@@ -1,5 +1,5 @@
 esphome:
-  name: Hall-9
+  name: hall-9
   friendly_name: Hall 9 Room 1
  
 esp32:
