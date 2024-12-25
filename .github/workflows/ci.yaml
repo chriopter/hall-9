@@ -15,4 +15,4 @@ jobs:
       - name: Build ESPHome firmware
         uses: esphome/build-action@main
         with:
-          yaml_file: hall-9.yaml
+          yaml-file: hall-9.yaml
