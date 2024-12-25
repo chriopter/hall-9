@@ -40,7 +40,7 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
    - Set `framework: esp-idf`
 
 2. **Packages**
-   - Include packages from [hall-9.yaml](hall-9.yaml)
+   - Include packages from [hall-9.yaml](hall-9.yaml) (All.yaml or selectively)
    - Changes are automatically pulled by ESPHome upon updating
 
 3. **Speech End Detection**
