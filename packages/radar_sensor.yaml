@@ -73,3 +73,11 @@ button:
       name: "restart"
     query_params:
       name: query params
+
+
+  switch:
+  - platform: ld2410
+    engineering_mode:
+      name: "engineering mode"
+    bluetooth:
+      name: "control bluetooth"
