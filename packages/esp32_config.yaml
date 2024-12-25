@@ -24,3 +24,7 @@ esphome:
         brightness: 60%
         effect: fast pulse
     - speaker.volume_set: 1.0
+
+psram:
+  mode: octal  # quad for N8R2 and octal for N16R8
+  speed: 80MHz
