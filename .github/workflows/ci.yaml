@@ -45,7 +45,7 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           mkdir -p releases
-          find . -name "*.bin" -type f -exec cp {} "releases/firmware_${{ github.sha }}.bin" \;
+          cp ".esphome/build/hall-9/hall-9.bin" "releases/firmware_${{ github.sha }}.bin"
           echo '{
             "version": "'${{ github.sha }}'",
             "url": "https://raw.githubusercontent.com/${{ github.repository }}/main/releases/firmware_${{ github.sha }}.bin",
