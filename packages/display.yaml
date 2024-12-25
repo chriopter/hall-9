@@ -12,21 +12,3 @@ display:
     update_interval: 5s
     lambda: |-
       it.strftime(0, 60, id(font1), TextAlign::BASELINE_LEFT, "%H:%M", id(esptime).now());
-
-light:
-  - platform: esp32_rmt_led_strip
-    id: led_ww
-    rgb_order: GRB
-    pin: GPIO48
-    num_leds: 1
-    rmt_channel: 0
-    chipset: ws2812
-    name: "${friendly_name} Status LED"
-    effects:
-      - pulse:
-      - pulse:
-          name: "Fast Pulse"
-          transition_length: 0.5s
-          update_interval: 0.5s
-          min_brightness: 0%
-          max_brightness: 100%
