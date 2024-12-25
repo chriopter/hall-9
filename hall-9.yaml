@@ -31,11 +31,6 @@ ota:
     id: ota_esphome
 
 wifi:
-  on_connect:
-    - delay: 5s
-    - ble.disable:
-  on_disconnect:
-    - ble.enable:
   ap:
     ssid: "Hall 9 Hotspot"
 
