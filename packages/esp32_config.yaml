@@ -13,3 +13,14 @@ sensor:
     name: "ESP32  Uptime"
     update_interval: 60s
     unit_of_measurement: "s" # You can set this to "minutes" or "hours" as needed
+
+esphome:
+  platformio_options:
+    board_build.flash_mode: dio
+  on_boot:
+    - light.turn_on:
+        id: led_ww
+        blue: 100%
+        brightness: 60%
+        effect: fast pulse
+    - speaker.volume_set: 1.0
