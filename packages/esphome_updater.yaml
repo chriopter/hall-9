@@ -4,17 +4,16 @@ esphome:
     version: "1.0.0"  # Current version of your project
 
 text_sensor:
+
   - platform: template
     name: "Firmware Status"
     id: firmware_status
     icon: "mdi:update"
-
-  - platform: version  # Add version sensor to get current running version
+    
+  - platform: version  # Version sensor is simple - just needs name and id
     name: "ESPHome Version"
     id: esphome_version
-    type: string
-    hide_timestamp: true
-
+    
 binary_sensor:
   - platform: template
     name: "Update Available"
