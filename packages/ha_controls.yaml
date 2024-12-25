@@ -2,13 +2,6 @@ button:
   - platform: restart
     name: "Restart"
     id: but_rest
-  - platform: ld2410
-    factory_reset:
-      name: "factory reset"
-    restart:
-      name: "restart"
-    query_params:
-      name: query params
 
 switch:
   - platform: template
