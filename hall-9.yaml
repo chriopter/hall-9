@@ -32,9 +32,7 @@ ota:
 
 wifi:
   id: wifi_id
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
-
+  captive_portal:
 
 logger:
 captive_portal:
