@@ -4,7 +4,11 @@ esphome:
     version: "1.0.5"  # Use the substitution
 
 text_sensor:
-  - platform: template
-    name: "Hall 9 Project Version"
-    id: project_version
-    lambda: return {"${project_version}"};
+  - platform: custom
+    lambda: |-
+      auto s = new text_sensor::CustomTextSensor();
+      s->publish_state("1.0.5");
+      return {s};
+    text_sensors:
+      - name: "Hall 9 Project Version"
+        id: project_version
