@@ -14,63 +14,63 @@ ld2410:
 binary_sensor:
   - platform: ld2410
     has_target:
-      name: "Presence"
+      name: "Radar Presence"
     has_moving_target:
-      name: "Moving Target"
+      name: "Radar Moving Target"
     has_still_target:
-      name: "Still Target"
+      name: "Radar Still Target"
 
 sensor:
   - platform: ld2410
     light:
-      name: light
+      name: "Radar light"
     moving_distance:
-      name: Moving Distance
+      name: "Radar Moving Distance"
     still_distance:
-      name: Still Distance
+      name: "Radar Still Distance"
     moving_energy:
-      name: Move Energy
+      name: "Radar Move Energy"
     still_energy:
-      name: Still Energy
+      name: "Radar Still Energy"
     detection_distance:
-      name: Detection Distance
+      name: "Radar Detection Distance"
 
 
 number:
   - platform: ld2410
     timeout:
-      name: timeout
+      name: "Radar timeout"
     light_threshold:
-      name: light threshold
+      name: "Radar light threshold"
     max_move_distance_gate:
-      name: max move distance gate
+      name: "Radar max move distance gate"
     max_still_distance_gate:
-      name: max still distance gate
+      name: "Radar max still distance gate"
     
 text_sensor:
   - platform: ld2410
     version:
-      name: "firmware version"
+      name: "Radar firmware version"
     mac_address:
-      name: "mac address"
+      name: "Radar mac address"
 
 select:
   - platform: ld2410
     distance_resolution:
-      name: "distance resolution"
+      name: "Radar distance resolution"
     baud_rate:
-      name: "baud rate"
+      name: "Radar baud rate"
     light_function:
-      name: light function
+      name: "Radar light function"
     out_pin_level:
-      name: out pin level
+      name: "Radar out pin level"
 
 button:
   - platform: ld2410
     factory_reset:
-      name: "factory reset"
+      name: "Radar factory reset"
     restart:
-      name: "restart"
+      name: "Radar restart"
     query_params:
       name: query params
 
@@ -78,6 +78,6 @@ button:
   switch:
   - platform: ld2410
     engineering_mode:
-      name: "engineering mode"
+      name: "Radar engineering mode"
     bluetooth:
-      name: "control bluetooth"
+      name: "Radar control bluetooth"
