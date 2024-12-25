@@ -3,28 +3,6 @@ esphome:
     name: "chriopter.hall-9"
     version: "1.0.0"  # Current version of your project
 
-# Function to perform version check
-globals:
-  - id: check_for_updates
-    type: void(void)
-    initializer: |-
-      []() {
-        const char* current_version = "1.0.0";  // Your current version
-        const char* repo_version = id(check_version).check();
-        
-        if (repo_version != nullptr) {
-          if (strcmp(current_version, repo_version) != 0) {
-            id(update_available).publish_state(true);
-            id(firmware_status).publish_state("Update available: " + String(repo_version));
-          } else {
-            id(update_available).publish_state(false);
-            id(firmware_status).publish_state("Up to date");
-          }
-        } else {
-          id(firmware_status).publish_state("Failed to check version");
-        }
-      }
-
 text_sensor:
   - platform: template
     name: "Firmware Status"
@@ -37,17 +15,37 @@ binary_sensor:
     id: update_available
     device_class: update
 
+# Create a script that can be called for version checking
+script:
+  - id: perform_version_check
+    then:
+      - lambda: |-
+          const char* current_version = "1.0.0";  // Your current version
+          const char* repo_version = id(check_version).check();
+          
+          if (repo_version != nullptr) {
+            if (strcmp(current_version, repo_version) != 0) {
+              id(update_available).publish_state(true);
+              id(firmware_status).publish_state("Update available: " + String(repo_version));
+            } else {
+              id(update_available).publish_state(false);
+              id(firmware_status).publish_state("Up to date");
+            }
+          } else {
+            id(firmware_status).publish_state("Failed to check version");
+          }
+
 button:
   - platform: template
     name: "Check for Updates"
     icon: "mdi:refresh"
     on_press:
-      - lambda: 'id(check_for_updates)();'
+      - script.execute: perform_version_check
 
 interval:
   - interval: 24h  # Check once per day
     then:
-      - lambda: 'id(check_for_updates)();'
+      - script.execute: perform_version_check
 
 # Optional: Add notifications via Home Assistant
 api:
