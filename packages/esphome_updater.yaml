@@ -9,19 +9,41 @@ text_sensor:
     id: firmware_status
     icon: "mdi:update"
 
+  - platform: version  # Add version sensor to get current running version
+    name: "ESPHome Version"
+    id: esphome_version
+    type: string
+    hide_timestamp: true
+
 binary_sensor:
   - platform: template
     name: "Update Available"
     id: update_available
     device_class: update
 
-# Create a script that can be called for version checking
+sensor:
+  - platform: custom
+    lambda: |-
+      auto version_check = new VersionCheck();
+      App.register_component(version_check);
+      return {version_check};
+    sensors:
+      - id: check_version
+        name: "Version Check"
+
+button:
+  - platform: template
+    name: "Check for Updates"
+    icon: "mdi:refresh"
+    on_press:
+      - script.execute: perform_version_check
+
 script:
   - id: perform_version_check
     then:
       - lambda: |-
-          const char* current_version = "1.0.0";  // Your current version
-          const char* repo_version = id(check_version).check();
+          const char* current_version = id(esphome_version).state.c_str();
+          const char* repo_version = id(check_version).state;
           
           if (repo_version != nullptr) {
             if (strcmp(current_version, repo_version) != 0) {
@@ -35,13 +57,6 @@ script:
             id(firmware_status).publish_state("Failed to check version");
           }
 
-button:
-  - platform: template
-    name: "Check for Updates"
-    icon: "mdi:refresh"
-    on_press:
-      - script.execute: perform_version_check
-
 interval:
   - interval: 24h  # Check once per day
     then:
@@ -49,6 +64,8 @@ interval:
 
 # Optional: Add notifications via Home Assistant
 api:
+  encryption:
+    key: !secret api_encryption_key  # Define this in your secrets.yaml
   services:
     - service: notify_update
       variables:
@@ -59,4 +76,4 @@ api:
             data:
               title: "ESPHome Update Available"
               message: !lambda |-
-                return "New version " + version + " is available for " + id(device_name);
+                return "New version " + version + " is available for " + std::string(ESPHOME_NAME);
