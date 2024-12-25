@@ -22,13 +22,6 @@ esp32:
     type: esp-idf
   variant: ESP32S3
 
-external_components:
-  - source: github://esphome/esphome@dev
-    components: ["esp32", "i2s_audio"]
-  - source: github://esphome/home-assistant-voice-pe@main
-  - source: github://dentra/esphome-components
-    components: ["ld2410"]
-
 # Basic configs
 api:
   id: api_id
