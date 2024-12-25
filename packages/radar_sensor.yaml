@@ -64,3 +64,12 @@ select:
       name: light function
     out_pin_level:
       name: out pin level
+
+button:
+  - platform: ld2410
+    factory_reset:
+      name: "factory reset"
+    restart:
+      name: "restart"
+    query_params:
+      name: query params
