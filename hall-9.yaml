@@ -1,72 +1,54 @@
-# hall-9.yaml
-substitutions:
-  name: hall-9
-  friendly_name: "Hall 9"
- 
-packages:
-  # Import all component packages
-  voice: !include packages/voice_components.yaml
-  sensors: !include packages/sensors.yaml
-  display: !include packages/display.yaml
-  controls: !include packages/controls.yaml
-  
 esphome:
-  name: ${name}
-  friendly_name: ${friendly_name}
-  platformio_options:
-    board_build.flash_mode: dio
-
+  name: Hall 9
+  friendly_name: Hall 9 Wohnzimmer
+ 
 esp32:
   board: esp32-s3-devkitc-1
   framework:
     type: esp-idf
-  variant: ESP32S3
 
-# Basic configs
+# Enable logging
+logger:
+
+# Enable Home Assistant API
 api:
-  id: api_id
-  
+  encryption:
+    key: "example"
+
 ota:
   - platform: esphome
-    id: ota_esphome
+    password: "example"
 
 wifi:
-  ap:
-    ssid: "Hall 9 Hotspot"
+  ssid: example
+  password: example
 
-logger:
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Hall-9"
+    password: "example"
+
 captive_portal:
 
-# Time config
-time:
-  - platform: homeassistant
-    id: esptime
-
-# Core audio components
-i2s_audio:
-  - id: i2s_in
-    i2s_lrclk_pin: GPIO8
-    i2s_bclk_pin: GPIO2
-  - id: i2s_speaker
-    i2s_lrclk_pin: GPIO10
-    i2s_bclk_pin: GPIO11
-
-microphone:
-  - platform: i2s_audio
-    id: va_mic
-    adc_type: external
-    i2s_din_pin: GPIO4
-    channel: left
-    pdm: false
-    i2s_audio_id: i2s_in
-    bits_per_sample: 32bit
-
-speaker:
-  platform: i2s_audio
-  id: va_speaker
-  i2s_audio_id: i2s_speaker
-  dac_type: external
-  i2s_dout_pin: GPIO12
-  channel: mono
-  bits_per_sample: 32bit
-  timeout: 500ms
+####
+packages:
+  voice_assistant:
+    url: https://github.com/chriopter/hall-9
+    ref: main
+    file: packages/voice_assistant.yaml
+    refresh: 0d
+  radar_sensor:
+    url: https://github.com/chriopter/hall-9
+    ref: main
+    file: packages/radar_sensor.yaml
+    refresh: 0d
+  temperature_sensor:
+    url: https://github.com/chriopter/hall-9
+    ref: main
+    file: packages/temperature_sensor.yaml
+    refresh: 0d
+  esp32_config:
+    url: https://github.com/chriopter/hall-9
+    ref: main
+    file: packages/esp32_config.yaml
+    refresh: 0d
