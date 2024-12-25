@@ -1,1 +1,62 @@
+esphome:
+  project:
+    name: "Hall 9"
+    version: "1.0.0"  # Current version of your project
 
+# Function to perform version check
+globals:
+  - id: check_for_updates
+    type: void(void)
+    lambda: |-
+      const char* current_version = "1.0.0";  // Your current version
+      const char* repo_version = id(check_version).check();
+      
+      if (repo_version != nullptr) {
+        if (strcmp(current_version, repo_version) != 0) {
+          id(update_available).publish_state(true);
+          id(firmware_status).publish_state("Update available: " + String(repo_version));
+        } else {
+          id(update_available).publish_state(false);
+          id(firmware_status).publish_state("Up to date");
+        }
+      } else {
+        id(firmware_status).publish_state("Failed to check version");
+      }
+
+text_sensor:
+  - platform: template
+    name: "Hall 9 Firmware Status"
+    id: firmware_status
+    icon: "mdi:update"
+
+binary_sensor:
+  - platform: template
+    name: "Hall 9 Update Available"
+    id: update_available
+    device_class: update
+
+button:
+  - platform: template
+    name: "Hall 9 Check for Updates"
+    icon: "mdi:refresh"
+    on_press:
+      - lambda: 'id(check_for_updates)();'
+
+interval:
+  - interval: 24h  # Check once per day
+    then:
+      - lambda: 'id(check_for_updates)();'
+
+# Optional: Add notifications via Home Assistant
+api:
+  services:
+    - service: notify_update
+      variables:
+        version: string
+      then:
+        - homeassistant.service:
+            service: persistent_notification.create
+            data:
+              title: "ESPHome Update Available"
+              message: !lambda |-
+                return "New version " + version + " is available for " + id(device_name);
