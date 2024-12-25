@@ -1,4 +1,27 @@
 button:
   - platform: restart
-    name: "Restart"
+    name: "ESP32 Restart"
     id: but_rest
+
+sensor:
+  - platform: internal_temperature
+    name: "ESP32 Internal Temperature"
+  - platform: wifi_signal
+    name: "ESP32 WiFi Signal Strength"
+    update_interval: 60s
+  - platform: uptime
+    name: "ESP32  Uptime"
+    update_interval: 60s
+    unit_of_measurement: "s" # You can set this to "minutes" or "hours" as needed
+  - platform: template
+    name: "ESP32 Free Heap Memory"
+    lambda: |-
+      return ESP.getFreeHeap();
+    unit_of_measurement: "bytes"
+    update_interval: 60s
+  - platform: template
+    name: "ESP32 CPU Frequency"
+    lambda: |-
+      return ESP.getCpuFreqMHz();
+    unit_of_measurement: "MHz"
+    update_interval: 60s
