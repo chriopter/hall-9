@@ -4,7 +4,7 @@ sensor:
     pin: GPIO17
     model: DHT22
     temperature:
-      name: "${friendly_name} Temperature"
+      name: "Temperature"
     humidity:
-      name: "${friendly_name} Humidity"
+      name: "Humidity"
     update_interval: 60s
