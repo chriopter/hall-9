@@ -1,0 +1,14 @@
+*.d
+*.slo
+*.lo
+*.o
+*.obj
+*.lai
+*.la
+*.a
+*.lib
+*.exe
+*.out
+*.app
+.DS_Store
+secrets.yaml
