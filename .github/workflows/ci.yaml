@@ -22,9 +22,13 @@ jobs:
             .esphome
             .pio
             ~/.platformio
-          key: ${{ runner.os }}-esphome-${{ hashFiles('*.yaml', '.esphome/**/*.h', '.esphome/**/*.cpp') }}
+            ~/.platformio/packages
+            ~/.platformio/penv
+            ~/.platformio/platforms
+            ~/.platformio/toolchains
+          key: ${{ runner.os }}-pio-${{ hashFiles('*.yaml', '.esphome/**/*.h', '.esphome/**/*.cpp') }}
           restore-keys: |
-            ${{ runner.os }}-esphome-
+            ${{ runner.os }}-pio-
 
       - name: Build ESPHome firmware
         id: build
