@@ -23,3 +23,26 @@ binary_sensor:
     name: "Hall 9 Update Available"
     id: update_available
     device_class: update
+
+button:
+  - platform: template
+    name: "Hall 9 Check for Updates"
+    icon: "mdi:refresh"
+    on_press:
+      - script.execute: perform_version_check
+
+script:
+  - id: perform_version_check
+    then:
+      - lambda: |-
+          std::string current_version = id(esphome_version).state;
+          id(firmware_status).publish_state("Checking for updates...");
+          // Here we'd normally check against a version source
+          // For now, just set a dummy update state
+          id(update_available).publish_state(true);
+          id(firmware_status).publish_state("Update check completed");
+
+interval:
+  - interval: 24h
+    then:
+      - script.execute: perform_version_check
