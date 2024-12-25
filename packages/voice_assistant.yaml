@@ -135,7 +135,7 @@ speaker:
   
 
 font:
-  - file: 'arial.ttf'
+  - file: "https://github.com/chriopter/hall-9/blob/main/assets/fonts/arial.ttf"
     id: font1
     size: 32
 
