@@ -4,11 +4,6 @@ i2c:
   scan: true
   frequency: 400kHz
 
-font:
-  - file: "https://github.com/chriopter/hall-9/blob/main/assets/fonts/arial.ttf"
-    id: font1
-    size: 32
-
 display:
   - platform: ssd1306_i2c
     model: "SSD1306 128x64"
