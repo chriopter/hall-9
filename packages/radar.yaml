@@ -53,3 +53,14 @@ text_sensor:
       name: "firmware version"
     mac_address:
       name: "mac address"
+
+select:
+  - platform: ld2410
+    distance_resolution:
+      name: "distance resolution"
+    baud_rate:
+      name: "baud rate"
+    light_function:
+      name: light function
+    out_pin_level:
+      name: out pin level
