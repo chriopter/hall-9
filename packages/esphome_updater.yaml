@@ -3,65 +3,27 @@ esphome:
     name: "chriopter.hall-9"
     version: "1.0.0"  # Current version of your project
 
-text_sensor:
+sensor:
+  - platform: template
+    name: "Hall 9 Version Check"
+    id: check_version
+    update_interval: 24h
 
+text_sensor:
   - platform: template
     name: "Hall 9 Firmware Status"
     id: firmware_status
     icon: "mdi:update"
-    
-  - platform: version  # Version sensor is simple - just needs name and id
+  - platform: version
     name: "Hall 9 ESPHome Version"
     id: esphome_version
-    
+
 binary_sensor:
   - platform: template
     name: "Hall 9 Update Available"
     id: update_available
     device_class: update
 
-sensor:
-  - platform: custom
-    lambda: |-
-      auto version_check = new VersionCheck();
-      App.register_component(version_check);
-      return {version_check};
-    sensors:
-      - id: check_version
-        name: "Hall 9 Version Check"
-
-button:
-  - platform: template
-    name: "Hall 9 Check for Updates"
-    icon: "mdi:refresh"
-    on_press:
-      - script.execute: perform_version_check
-
-script:
-  - id: perform_version_check
-    then:
-      - lambda: |-
-          const char* current_version = id(esphome_version).state.c_str();
-          const char* repo_version = id(check_version).state;
-          
-          if (repo_version != nullptr) {
-            if (strcmp(current_version, repo_version) != 0) {
-              id(update_available).publish_state(true);
-              id(firmware_status).publish_state("Hall 9 Update available: " + String(repo_version));
-            } else {
-              id(update_available).publish_state(false);
-              id(firmware_status).publish_state("Hall 9 Up to date");
-            }
-          } else {
-            id(firmware_status).publish_state("Hall 9 Failed to check version");
-          }
-
-interval:
-  - interval: 24h  # Check once per day
-    then:
-      - script.execute: perform_version_check
-
-# Optional: Add notifications via Home Assistant
 api:
   services:
     - service: notify_update
@@ -73,4 +35,4 @@ api:
             data:
               title: "Hall 9 ESPHome Update Available"
               message: !lambda |-
-                return "New version " + id(esphome_version).state + " is available for " + std::string(ESPHOME_NAME);
+                return "New version available for Hall 9 " + id(name).value();
