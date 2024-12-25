@@ -31,8 +31,13 @@ ota:
     id: ota_esphome
 
 wifi:
-  id: wifi_id
-  captive_portal:
+  on_connect:
+    - delay: 5s
+    - ble.disable:
+  on_disconnect:
+    - ble.enable:
+  ap:
+    ssid: "Hall 9 Hotspot"
 
 logger:
 captive_portal:
