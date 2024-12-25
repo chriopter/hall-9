@@ -33,10 +33,10 @@ captive_portal:
 # First code includes all packages
 
 packages:
-  include_all:
+  all:
     url: https://github.com/chriopter/hall-9
     ref: main
-    file: packages/include_all.yaml
+    file: packages/all.yaml
     refresh: 0d
 
 # Or use packages depending on preferences / if not used all optional sensors
