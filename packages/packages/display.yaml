@@ -1,0 +1,37 @@
+i2c:
+  sda: GPIO16
+  scl: GPIO15
+  scan: true
+  frequency: 400kHz
+
+font:
+  - file: 'arial.ttf'
+    id: font1
+    size: 32
+
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    rotation: 0
+    address: 0x3C
+    update_interval: 5s
+    lambda: |-
+      it.strftime(0, 60, id(font1), TextAlign::BASELINE_LEFT, "%H:%M", id(esptime).now());
+
+light:
+  - platform: esp32_rmt_led_strip
+    id: led_ww
+    rgb_order: GRB
+    pin: GPIO48
+    num_leds: 1
+    rmt_channel: 0
+    chipset: ws2812
+    name: "${friendly_name} Status LED"
+    effects:
+      - pulse:
+      - pulse:
+          name: "Fast Pulse"
+          transition_length: 0.5s
+          update_interval: 0.5s
+          min_brightness: 0%
+          max_brightness: 100%
