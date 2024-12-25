@@ -16,10 +16,11 @@
 3. **Speech End Detection**  
    - Set to “aggressive” to reduce latency
 
-<details>
-  <summary>📘 Home Assistant Setup</summary>
 
-### Home Assistant Setup
+  <summary>📘 Prepare Home Assistant Voice Pipeline</summary>
+
+<details>
+Home Assistant Setup
 
 1. **Whisper (STT) & Piper (TTS)**
    - Install add-ons
