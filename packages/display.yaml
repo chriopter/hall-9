@@ -5,7 +5,7 @@ i2c:
   frequency: 400kHz
 
 font:
-  - file: 'arial.ttf'
+  - file: "assets/fonts/arial.ttf"
     id: font1
     size: 32
 
