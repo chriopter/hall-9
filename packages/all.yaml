@@ -1,0 +1,28 @@
+# If you use all recommended sensors, you can just link this file to ensure future libraries are installed as well.
+####
+packages:
+  voice_assistant:
+    url: https://github.com/chriopter/hall-9
+    ref: main
+    file: packages/voice_assistant.yaml
+    refresh: 0d
+  radar_sensor:
+    url: https://github.com/chriopter/hall-9
+    ref: main
+    file: packages/radar_sensor.yaml
+    refresh: 0d
+  temperature_sensor:
+    url: https://github.com/chriopter/hall-9
+    ref: main
+    file: packages/temperature_sensor.yaml
+    refresh: 0d
+  esp32_config:
+    url: https://github.com/chriopter/hall-9
+    ref: main
+    file: packages/esp32_config.yaml
+    refresh: 0d
+  esphome_updater:
+    url: https://github.com/chriopter/hall-9
+    ref: main
+    file: packages/esphome_updater.yaml
+    refresh: 0d
