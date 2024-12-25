@@ -6,20 +6,20 @@
 ---
 
 <details>
-  <summary>🔧 1. Building the Device</summary>
+  <summary>🔧 Building the Device</summary>
 
 ### **Hardware Parts**
 
 - **ESP32-S3** (local wake-word detection capable)
 - **MAX98357** Amplifier + **Speaker** (4 Ω / 8 Ω)
 - **INMP441** Microphone
-- **SSD1306** Display (optional)
+- **SSD1306** Display
 - **LD2410** Radar (optional)
 - **DHT22** Thermometer (optional)
 
 ### **Bench Case**
 
-- Use a suitable bench case during development
+- Use asset folder linked bench case if you want
 
 ### **Wiring**
 
@@ -29,7 +29,7 @@
 </details>
 
 <details>
-  <summary>⚙️ 2. Install ESP32</summary>
+  <summary>⚙️ Install ESP32</summary>
 
 ### **ESPHome Setup**
 
@@ -39,7 +39,7 @@
 
 2. **Packages**
    - Include those from `hall-9.yaml`
-   - Automatically pulled by ESPHome
+   - Changes are Automatically pulled by ESPHome on updating
 
 3. **Speech End Detection**
    - Set to “aggressive” to reduce latency
@@ -47,7 +47,7 @@
 </details>
 
 <details>
-  <summary>📡 3. Prepare Home Assistant</summary>
+  <summary>📡 Home Assistant Voice Pipeline</summary>
 
 ### **Home Assistant Voice Pipeline**
 
@@ -68,7 +68,7 @@
 ---
 
 <details>
-  <summary>🚀 4. Future</summary>
+  <summary>🚀 4. Future To-Dos</summary>
 
 ### **Future Developments**
 
