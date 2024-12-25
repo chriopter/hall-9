@@ -14,11 +14,11 @@ ld2410:
 binary_sensor:
   - platform: ld2410
     has_target:
-      name: "${friendly_name} Presence"
+      name: "Presence"
     has_moving_target:
-      name: "${friendly_name} Moving Target"
+      name: "Moving Target"
     has_still_target:
-      name: "${friendly_name} Still Target"
+      name: "Still Target"
 
 sensor:
   - platform: ld2410
