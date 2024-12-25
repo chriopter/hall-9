@@ -1,7 +1,7 @@
 esphome:
   project:
     name: "chriopter.hall-9"
-    version: "1.0.6"  # Use the substitution
+    version: "1.0.5"  # Use the substitution
 
 text_sensor:
   - platform: version
