@@ -23,16 +23,3 @@ binary_sensor:
     name: "Hall 9 Update Available"
     id: update_available
     device_class: update
-
-api:
-  services:
-    - service: notify_update
-      variables:
-        message: string
-      then:
-        - homeassistant.service:
-            service: persistent_notification.create
-            data:
-              title: "Hall 9 ESPHome Update Available"
-              message: !lambda |-
-                return "New version available for Hall 9 " + id(name).value();
