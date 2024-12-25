@@ -14,6 +14,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            .esphome
+          key: ${{ runner.os }}-esphome-${{ hashFiles('*.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-esphome-
+
       - name: Build ESPHome firmware
         uses: esphome/build-action@main
         with:
@@ -23,7 +32,7 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           mkdir -p releases
-          cp .esphome/build/hall-9/firmware-factory.bin "releases/firmware_${{ github.sha }}.bin"
+          cp .esphome/build/*/firmware.bin "releases/firmware_${{ github.sha }}.bin"
           echo '{
             "version": "'${{ github.sha }}'",
             "url": "https://raw.githubusercontent.com/${{ github.repository }}/main/releases/firmware_${{ github.sha }}.bin",
