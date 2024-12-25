@@ -45,7 +45,7 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           mkdir -p releases
-          cp ".esphome/build/hall-9/hall-9.bin" "releases/firmware_${{ github.sha }}.bin"
+          cp "hall-9-esp32s3/hall-9-esp32s3.ota.bin" "releases/firmware_${{ github.sha }}.bin"
           echo '{
             "version": "'${{ github.sha }}'",
             "url": "https://raw.githubusercontent.com/${{ github.repository }}/main/releases/firmware_${{ github.sha }}.bin",
