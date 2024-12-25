@@ -1,0 +1,84 @@
+# hall-9.yaml
+substitutions:
+  name: hall-9
+  friendly_name: "Hall 9"
+
+packages:
+  # Import all component packages
+  voice: !include packages/voice_components.yaml
+  sensors: !include packages/sensors.yaml
+  display: !include packages/display.yaml
+  controls: !include packages/controls.yaml
+  
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  platformio_options:
+    board_build.flash_mode: dio
+  includes:
+    - voice_assistant_pins.h
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: esp-idf
+  variant: ESP32S3
+
+external_components:
+  - source: github://esphome/esphome@dev
+    components: ["esp32", "i2s_audio"]
+  - source: github://esphome/home-assistant-voice-pe@main
+  - source: github://dentra/esphome-components
+    components: ["ld2410"]
+
+# Basic configs
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: "Hall-9 Fallback"
+    password: !secret fallback_password
+
+logger:
+captive_portal:
+
+# Time config
+time:
+  - platform: homeassistant
+    id: esptime
+
+# Core audio components
+i2s_audio:
+  - id: i2s_in
+    i2s_lrclk_pin: GPIO8
+    i2s_bclk_pin: GPIO2
+  - id: i2s_speaker
+    i2s_lrclk_pin: GPIO10
+    i2s_bclk_pin: GPIO11
+
+microphone:
+  - platform: i2s_audio
+    id: va_mic
+    adc_type: external
+    i2s_din_pin: GPIO4
+    channel: left
+    pdm: false
+    i2s_audio_id: i2s_in
+    bits_per_sample: 32bit
+
+speaker:
+  platform: i2s_audio
+  id: va_speaker
+  i2s_audio_id: i2s_speaker
+  dac_type: external
+  i2s_dout_pin: GPIO12
+  channel: mono
+  bits_per_sample: 32bit
+  timeout: 500ms
