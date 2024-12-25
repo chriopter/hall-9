@@ -15,7 +15,7 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
 - **ESP32-S3** (local wake-word detection capable)
 - **MAX98357** Amplifier + **Speaker** (4 Ω / 8 Ω)
 - **INMP441** Microphone
-- **SSD1306** Display (optional)
+- **SSD1306** Display
 - **LD2410** Radar (optional)
 - **DHT22** Thermometer (optional)
 
