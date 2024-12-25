@@ -132,3 +132,15 @@ speaker:
     channel: mono
     bits_per_sample: 32bit
     timeout: 500ms
+  
+
+font:
+  - file: 'arial.ttf'
+    id: font1
+    size: 32
+
+
+# Time configuration (using Home Assistant or NTP server)
+time:
+  - platform: homeassistant
+    id: esptime
