@@ -69,8 +69,7 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
 
 ---
 
-<details>
-  <summary>🚀 5. Future To-Dos</summary>
+# 🚀 Future To-Dos
 
 ### **Future Developments**
 
@@ -81,6 +80,4 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
 
 - Design a new case
 - Update from repo
-- Docker for external Whisper
-
-</details>
+- Docker for external Whisper Info
