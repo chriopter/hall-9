@@ -2,7 +2,7 @@
 substitutions:
   name: hall-9
   friendly_name: "Hall 9"
-
+ 
 packages:
   # Import all component packages
   voice: !include packages/voice_components.yaml
