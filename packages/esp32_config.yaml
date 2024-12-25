@@ -28,3 +28,13 @@ esphome:
 psram:
   mode: octal  # quad for N8R2 and octal for N16R8
   speed: 80MHz
+
+api:
+  on_client_connected:
+    then:
+      - delay: 50ms
+      - light.turn_off: led_ww
+      - micro_wake_word.start:
+  on_client_disconnected:
+    then:
+      - voice_assistant.stop: 
