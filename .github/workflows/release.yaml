@@ -1,0 +1,27 @@
+name: Update Version
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get the version
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Update version in YAML
+        run: |
+          sed -i "s/version: \".*\"/version: \"${{ steps.get_version.outputs.VERSION }}\"/" packages/esphome_updater.yaml
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Update version to ${{ steps.get_version.outputs.VERSION }}"
+          git push
