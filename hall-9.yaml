@@ -32,6 +32,8 @@ ota:
 
 wifi:
   id: wifi_id
+  use_address: hall-9.local  # Your device's address
+
 
 logger:
 captive_portal:
