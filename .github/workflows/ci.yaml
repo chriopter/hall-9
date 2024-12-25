@@ -32,11 +32,16 @@ jobs:
         with:
           yaml-file: hall-9.yaml
           
+      - name: Debug output location
+        run: |
+          echo "Build outputs:"
+          ls -R .esphome/build/
+          
       - name: Update manifest and deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           mkdir -p releases
-          cp "${{ steps.build.outputs.firmware }}" "releases/firmware_${{ github.sha }}.bin"
+          find . -name "*.bin" -type f -exec cp {} "releases/firmware_${{ github.sha }}.bin" \;
           echo '{
             "version": "'${{ github.sha }}'",
             "url": "https://raw.githubusercontent.com/${{ github.repository }}/main/releases/firmware_${{ github.sha }}.bin",
