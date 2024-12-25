@@ -1,37 +1,87 @@
 # 1. Overview
-- **hall-9**: Local LLM integration with Home Assistant + ESPHome  
-- **Goal**: Local speech-to-text, text-to-speech, and LLM on an ESP32-S3, integrated into Home Assistant
+
+- **hall-9**: Local LLM integration with Home Assistant & ESPHome
+- **Objective**: Achieve offline STT/TTS with a wake-word on an ESP32-S3
 
 ---
 
-# 2. Home Assistant + Hardware (Collapsed)
+#  Setup Hall 9
 
-- **Home Assistant**:
-  - Install + configure **Whisper** (STT), **Piper** (TTS) via Wyoming
-  - Integrate an LLM (e.g. Ollama)  
-  - Set up Assistant pipelines (Whisper + Piper)  
+1. **ESP32 Deployment**  
+   - Create standard config in ESPHome  
+   - Set `framework: esp-idf`
+2. **Packages**  
+   - Include those from `hall-9.yaml`  
+   - Automatically pulled by ESPHome
+3. **Speech End Detection**  
+   - Set to “aggressive” to reduce latency
 
-- **Hardware**:
-  - **ESP32-S3** with local wake-word detection
-  - **MAX98357** amplifier + speaker (4/8 Ω)
-  - **INMP441** microphone
-  - Optional: **SSD1306** display, **LD2410** radar, **DHT22** thermometer
-  - Provide 5 V to MAX98357 (some ESP32-S3 boards can do this directly)
+<details>
+  <summary>📘 Home Assistant Setup</summary>
+
+### Home Assistant Setup
+
+1. **Whisper (STT) & Piper (TTS)**
+   - Install add-ons
+   - Configure both via Wyoming
+
+2. **LLM of Choice**
+   - Example: Ollama (networked) or ChatGPT
+   - Integrate via Add-On
+
+3. **Assistant Pipeline**
+   - Configure in Home Assistant
+   - Reference Whisper & Piper
+
+</details>
+---
+
+
+# 3. Home Assistant Setup
+
+1. **Whisper (STT)** & **Piper (TTS)**  
+   - Install add-ons  
+   - Configure both via Wyoming  
+2. **LLM of Choice**  
+   - Example: Ollama (networked) or ChatGPT  
+   - Integrate via Add-On  
+3. **Assistant Pipeline**  
+   - Configure in Home Assistant  
+   - Reference Whisper & Piper
 
 ---
 
-# 3. ESPHome
-1. Use standard ESP32-S3 config with `framework: esp-idf`  
-2. Include `hall-9.yaml` packages; ESPHome will auto-fetch dependencies  
-3. Set speech end-detection to **aggressive**
+# 4. Hardware
+
+## 4.1 Parts
+
+- **ESP32-S3** (local wake-word detection capable)  
+- **MAX98357** Amplifier + **Speaker** (4 Ω / 8 Ω)  
+- **INMP441** Microphone  
+- **SSD1306** Display (optional)  
+- **LD2410** Radar (optional)  
+- **DHT22** Thermometer (optional)
+
+## 4.2 Bench Case
+
+- Use a suitable bench case during development
+
+## 4.3 Wiring
+
+- Follow pinout from YAML configuration  
+- Provide **5 V** for MAX98357 (some ESP32-S3 boards supply this)
 
 ---
 
-# 4. Future
-- [ESPHOME Request #2562](https://github.com/esphome/feature-requests/issues/2562)  
+# 5. Future
+
+## 5.1 Future Developments
+
+- [ESPhome Feature Request #2562](https://github.com/esphome/feature-requests/issues/2562)  
 - [HA Community Discussion](https://community.home-assistant.io/t/voice-assistant-wake-word-media-player/634984/9)
 
-**To-Do**:
+## 5.2 To-Do
+
 - Design a new case  
-- Repo updates  
-- Docker-based external Whisper setup  
+- Update from repo  
+- Docker for external Whisper  
