@@ -132,10 +132,9 @@ speaker:
     channel: mono
     bits_per_sample: 32bit
     timeout: 500ms
-  
 
 font:
-  - file: "https://github.com/chriopter/hall-9/blob/main/assets/fonts/arial.ttf"
+  - file: "https://raw.githubusercontent.com/chriopter/hall-9/main/assets/fonts/arial.ttf"
     id: font1
     size: 32
 
