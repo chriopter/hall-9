@@ -8,12 +8,3 @@ sensor:
     humidity:
       name: "Humidity"
     update_interval: 60s
-
-button:
-  - platform: ld2410
-    factory_reset:
-      name: "factory reset"
-    restart:
-      name: "restart"
-    query_params:
-      name: query params
