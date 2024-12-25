@@ -39,8 +39,3 @@ switch:
       - delay: 2s
       - light.turn_off:
           id: led_ww 
-  - platform: ld2410
-    engineering_mode:
-      name: "engineering mode"
-    bluetooth:
-      name: "control bluetooth"
