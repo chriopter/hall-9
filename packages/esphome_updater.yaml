@@ -64,8 +64,6 @@ interval:
 
 # Optional: Add notifications via Home Assistant
 api:
-  encryption:
-    key: !secret api_encryption_key  # Define this in your secrets.yaml
   services:
     - service: notify_update
       variables:
