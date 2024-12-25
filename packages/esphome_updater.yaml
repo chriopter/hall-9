@@ -4,6 +4,7 @@ esphome:
     version: "1.0.5"  # Use the substitution
 
 text_sensor:
-  - platform: version
-    name: "Hall 9 ESPHome Version"
-    id: esphome_version
+  - platform: template
+    name: "Hall 9 Project Version"
+    id: project_version
+    lambda: return {"${project_version}"};
