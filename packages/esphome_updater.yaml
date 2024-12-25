@@ -4,8 +4,9 @@ esphome:
     version: "1.0.5"  # Use the substitution
 
 text_sensor:
-  - platform: text
+  - platform: template
     name: "Hall 9 Project Version"
     id: project_version
     update_interval: never
-    initial_value: "${project_version}"
+    lambda: |-
+      return {"${project_version}"};
