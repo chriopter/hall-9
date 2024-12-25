@@ -31,8 +31,17 @@ wifi:
 captive_portal:
 
 ####
-external_components:
-  - source: github://chriopter/hall-9@main
+packages:
+  global_all: # This name can be anything
+    url: https://github.com/chriopter/hall-9
+    ref: main
+    files: 
+      - packages/all.yaml
+      # Either include all packages maintained here for complete hardware featureset or limit like this by umcommenting
+      #- packages/voice_assistant.yaml
+      #- packages/radar_sensor.yaml
+      #- packages/temperature_sensor.yaml
+      #- packages/esp32_config.yaml
+      #- packages/esphome_updater.yaml
     refresh: 0d
-    # Either include all packages maintained here for complete hardware featureset or limit like this by umcommenting:
-    # components: [voice_assistant, radar_sensor, temperature_sensor, esp32_config, esphome_updater]
+    
