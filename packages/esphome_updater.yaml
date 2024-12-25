@@ -1,10 +1,10 @@
 substitutions:
-  device_version: "0.0.0"  # This will be overridden by CI
+  device_version: "1.0.4"  # This will be overridden by CI
 
 esphome:
   project:
     name: "chriopter.hall-9"
-    version: "${device_version}"  # Use the substitution
+    version: "1.0.4"  # Use the substitution
 
 text_sensor:
   - platform: version
