@@ -31,7 +31,7 @@ micro_wake_word:
         brightness: 60%
         effect: fast pulse
 
-  switch:
+switch:
   - platform: template
     id: mute
     name: mute
