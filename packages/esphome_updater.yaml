@@ -66,11 +66,11 @@ api:
   services:
     - service: notify_update
       variables:
-        version: string
+        message: string
       then:
         - homeassistant.service:
             service: persistent_notification.create
             data:
               title: "ESPHome Update Available"
               message: !lambda |-
-                return "New version " + version + " is available for " + std::string(ESPHOME_NAME);
+                return "New version " + id(esphome_version).state + " is available for " + std::string(ESPHOME_NAME);
