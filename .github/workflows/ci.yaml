@@ -36,4 +36,3 @@ jobs:
         uses: esphome/build-action@main
         with:
           yaml-file: hall-9.yaml
-          substitutions: ${{ github.event_name == 'release' && format('device_version: {0}', github.ref_name) || '' }}
