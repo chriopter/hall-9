@@ -1,4 +1,4 @@
-# Contails Microphone, Speaker, Voice Assistant and Display Configuration
+# Contails Microphone, Speaker, Voice Assistant, Status Light and Display Configuration
 
 voice_assistant:
   id: va
