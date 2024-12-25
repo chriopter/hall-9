@@ -1,37 +1,37 @@
-# hall-9 Overview
+# 1. Overview
 
 - **hall-9**: Local LLM integration with Home Assistant & ESPHome
 - **Objective**: Achieve offline STT/TTS with a wake-word on an ESP32-S3
 
-Repo primarly contains ESPHome Code for chosen hardware, updated centrally. Also contains case files.
+Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configuration and the [/assets/case](assets/case/) folder for case files.
 
 ---
 
 <details>
-  <summary>🔧 Building the Device</summary>
+  <summary>🔧 2. Building the Device</summary>
 
 ### **Hardware Parts**
 
 - **ESP32-S3** (local wake-word detection capable)
 - **MAX98357** Amplifier + **Speaker** (4 Ω / 8 Ω)
 - **INMP441** Microphone
-- **SSD1306** Display
+- **SSD1306** Display (optional)
 - **LD2410** Radar (optional)
 - **DHT22** Thermometer (optional)
 
 ### **Bench Case**
 
-- Use asset folder linked bench case if you want
+- Use the bench case available in the [/assets/case](assets/case/) folder during development
 
 ### **Wiring**
 
-- Follow pinout from YAML configuration
+- Follow the pinout from the `hall-9.yaml` configuration
 - Provide **5 V** for MAX98357 (some ESP32-S3 boards supply this directly)
 
 </details>
 
 <details>
-  <summary>⚙️ Install ESP32</summary>
+  <summary>⚙️ 3. Install ESP32</summary>
 
 ### **ESPHome Setup**
 
@@ -40,8 +40,8 @@ Repo primarly contains ESPHome Code for chosen hardware, updated centrally. Also
    - Set `framework: esp-idf`
 
 2. **Packages**
-   - Include those from `hall-9.yaml`
-   - Changes are Automatically pulled by ESPHome on updating
+   - Include packages from [hall-9.yaml](hall-9.yaml)
+   - Changes are automatically pulled by ESPHome upon updating
 
 3. **Speech End Detection**
    - Set to “aggressive” to reduce latency
@@ -49,7 +49,7 @@ Repo primarly contains ESPHome Code for chosen hardware, updated centrally. Also
 </details>
 
 <details>
-  <summary>📡 Home Assistant Voice Pipeline</summary>
+  <summary>📡 4. Prepare Home Assistant Voice Pipeline</summary>
 
 ### **Home Assistant Voice Pipeline**
 
@@ -70,7 +70,7 @@ Repo primarly contains ESPHome Code for chosen hardware, updated centrally. Also
 ---
 
 <details>
-  <summary>🚀 4. Future To-Dos</summary>
+  <summary>🚀 5. Future To-Dos</summary>
 
 ### **Future Developments**
 
