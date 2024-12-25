@@ -8,7 +8,7 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
 ---
 
 <details>
-  <summary>🔧 2. Building the Device</summary>
+  <summary>🔧 Building the Device</summary>
 
 ### **Hardware Parts**
 
@@ -31,7 +31,7 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
 </details>
 
 <details>
-  <summary>⚙️ 3. Install ESP32</summary>
+  <summary>⚙️ Install ESP32</summary>
 
 ### **ESPHome Setup**
 
@@ -49,7 +49,7 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
 </details>
 
 <details>
-  <summary>📡 4. Prepare Home Assistant Voice Pipeline</summary>
+  <summary>📡 Prepare Home Assistant Voice Pipeline</summary>
 
 ### **Home Assistant Voice Pipeline**
 
