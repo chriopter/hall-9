@@ -3,6 +3,8 @@
 - **hall-9**: Local LLM integration with Home Assistant & ESPHome
 - **Objective**: Achieve offline STT/TTS with a wake-word on an ESP32-S3
 
+Repo primarly contains ESPHome Code for chosen hardware, updated centrally. Also contains case files.
+
 ---
 
 <details>
