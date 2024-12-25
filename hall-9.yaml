@@ -52,3 +52,8 @@ packages:
     ref: main
     file: packages/esp32_config.yaml
     refresh: 0d
+  esphome_updater:
+    url: https://github.com/chriopter/hall-9
+    ref: main
+    file: packages/esphome_updater.yaml
+    refresh: 0d
