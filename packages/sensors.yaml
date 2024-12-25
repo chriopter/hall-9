@@ -1,13 +1,13 @@
 # Temperature and Humidity
 sensor:
   - platform: dht
-      pin: GPIO17
-      model: DHT22
-      temperature:
-        name: "${friendly_name} Temperature"
-      humidity:
-        name: "${friendly_name} Humidity"
-      update_interval: 60s
+    pin: GPIO17
+    model: DHT22
+    temperature:
+      name: "${friendly_name} Temperature"
+    humidity:
+      name: "${friendly_name} Humidity"
+    update_interval: 60s
   - platform: ld2410
     light:
       name: light
