@@ -1,0 +1,4 @@
+button:
+  - platform: restart
+    name: "Restart"
+    id: but_rest
