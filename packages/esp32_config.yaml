@@ -13,15 +13,3 @@ sensor:
     name: "ESP32  Uptime"
     update_interval: 60s
     unit_of_measurement: "s" # You can set this to "minutes" or "hours" as needed
-  - platform: template
-    name: "ESP32 Free Heap Memory"
-    lambda: |-
-      return ESP.getFreeHeap();
-    unit_of_measurement: "bytes"
-    update_interval: 60s
-  - platform: template
-    name: "ESP32 CPU Frequency"
-    lambda: |-
-      return ESP.getCpuFreqMHz();
-    unit_of_measurement: "MHz"
-    update_interval: 60s
