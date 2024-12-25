@@ -30,18 +30,10 @@ jobs:
           key: ${{ runner.os }}-pio-${{ hashFiles('*.yaml', '.esphome/**/*.h', '.esphome/**/*.cpp') }}
           restore-keys: |
             ${{ runner.os }}-pio-
-      - name: Get version for releases
-        id: get_version
-        if: github.event_name == 'release'
-        run: |
-          VERSION=${GITHUB_REF#refs/tags/}
-          VERSION=${VERSION#v}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Build ESPHome firmware
         id: build
         uses: esphome/build-action@main
         with:
           yaml-file: hall-9.yaml
-          docker-tag: esphome/esphome:latest
-          version: ${{ github.event_name == 'release' && steps.get_version.outputs.version || '' }}
+          version: ${{ github.event_name == 'release' && github.ref_name || '' }}
