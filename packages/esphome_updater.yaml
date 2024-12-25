@@ -1,48 +1,12 @@
+substitutions:
+  device_version: "0.0.0"  # This will be overridden by CI
+
 esphome:
   project:
     name: "chriopter.hall-9"
-    version: "1.0.0"  # Current version of your project
-
-sensor:
-  - platform: template
-    name: "Hall 9 Version Check"
-    id: check_version
-    update_interval: 24h
+    version: "${device_version}"  # Use the substitution
 
 text_sensor:
-  - platform: template
-    name: "Hall 9 Firmware Status"
-    id: firmware_status
-    icon: "mdi:update"
   - platform: version
     name: "Hall 9 ESPHome Version"
     id: esphome_version
-
-binary_sensor:
-  - platform: template
-    name: "Hall 9 Update Available"
-    id: update_available
-    device_class: update
-
-button:
-  - platform: template
-    name: "Hall 9 Check for Updates"
-    icon: "mdi:refresh"
-    on_press:
-      - script.execute: perform_version_check
-
-script:
-  - id: perform_version_check
-    then:
-      - lambda: |-
-          std::string current_version = id(esphome_version).state;
-          id(firmware_status).publish_state("Checking for updates...");
-          // Here we'd normally check against a version source
-          // For now, just set a dummy update state
-          id(update_available).publish_state(true);
-          id(firmware_status).publish_state("Update check completed");
-
-interval:
-  - interval: 24h
-    then:
-      - script.execute: perform_version_check
