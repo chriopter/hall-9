@@ -1,6 +1,6 @@
 esphome:
   project:
-    name: "Hall 9"
+    name: "chriopter.hall-9"
     version: "1.0.0"  # Current version of your project
 
 # Function to perform version check
