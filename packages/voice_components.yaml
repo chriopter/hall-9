@@ -1,0 +1,32 @@
+# packages/voice_components.yaml
+voice_assistant:
+  id: va
+  microphone: va_mic
+  speaker: va_speaker
+  volume_multiplier: 4.0
+  on_stt_end:
+    then:
+      - light.turn_off: led_ww
+  on_error:
+    - micro_wake_word.start:
+  on_end:
+    then:
+      - light.turn_off: led_ww
+      - wait_until:
+          not:
+            voice_assistant.is_running:
+      - micro_wake_word.start:
+
+micro_wake_word:
+  models:
+    - model: okay_nabu
+  on_wake_word_detected:
+    - voice_assistant.start:
+        wake_word: !lambda return wake_word;
+    - light.turn_on:
+        id: led_ww
+        red: 30%
+        green: 30%
+        blue: 70%
+        brightness: 60%
+        effect: fast pulse
