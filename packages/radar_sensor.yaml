@@ -1,4 +1,5 @@
 # LD2410 Radar
+
 uart:
   id: uart2410
   tx_pin: GPIO20
@@ -34,7 +35,6 @@ sensor:
       name: "Radar Still Energy"
     detection_distance:
       name: "Radar Detection Distance"
-
 
 number:
   - platform: ld2410
@@ -72,10 +72,9 @@ button:
     restart:
       name: "Radar restart"
     query_params:
-      name: query params
+      name: "query params"
 
-
-  switch:
+switch:
   - platform: ld2410
     engineering_mode:
       name: "Radar engineering mode"
