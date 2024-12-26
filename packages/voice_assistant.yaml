@@ -1,5 +1,10 @@
 # Contails Microphone, Speaker, Voice Assistant, Status Light and Display Configuration
 
+globals:
+  - id: voice_assistant_phase
+    type: int
+    initial_value: '1'  # Starting phase
+    
 voice_assistant:
   id: va
   microphone: va_mic
