@@ -1,0 +1,215 @@
+# Contails Microphone, Speaker, Voice Assistant, Status Light and Display Configuration
+
+voice_assistant:
+  id: va
+  microphone: va_mic
+  noise_suppression_level: 4.0
+  volume_multiplier: 1.0
+  conversation_timeout: 10s
+  speaker: va_speaker
+  on_tts_start:
+    - light.turn_on:
+        id: led_ww           
+        red: 30%
+        green: 30%
+        blue: 70%
+        brightness: 60%
+        effect: fast pulse 
+    - lambda: id(voice_assistant_phase) = 4;
+    - script.execute: draw_display
+    - homeassistant.service:
+        service: notify.alexa_media
+        data:
+          message: !lambda 'return x;'
+          target: ${tts_target}
+  on_listening:
+    - lambda: id(voice_assistant_phase) = 2;
+    - script.execute: draw_display
+  on_stt_end:
+    - lambda: id(voice_assistant_phase) = 3;
+    - script.execute: draw_display
+    - light.turn_off: led_ww
+  on_error:
+    - micro_wake_word.start:  
+  on_end:
+    - light.turn_off: led_ww
+    - wait_until:
+        not:
+          voice_assistant.is_running:
+    #- delay: 2s
+    #- light.turn_on:
+     #   id: led_ww           
+      #  red: 10%
+       # green: 80%
+        #blue: 10%
+        #brightness: 60%
+    #- voice_assistant.start_continuous: 
+    #- delay: 5s
+    #- light.turn_off: led_ww
+    #- voice_assistant.stop: 
+    - micro_wake_word.start: 
+    - lambda: id(voice_assistant_phase) = 1;
+    - script.execute: draw_display
+
+micro_wake_word:
+  models:
+    - model: okay_nabu
+  on_wake_word_detected:
+    - voice_assistant.start:
+        wake_word: !lambda return wake_word;
+    - light.turn_on:
+        id: led_ww
+        red: 30%
+        green: 30%
+        blue: 70%
+        brightness: 60%
+        effect: fast pulse
+
+switch:
+  - platform: template
+    id: mute
+    name: mute
+    optimistic: true
+    on_turn_on: 
+      - micro_wake_word.stop:
+      - voice_assistant.stop:
+      - light.turn_on:
+          id: led_ww           
+          red: 100%
+          green: 0%
+          blue: 0%
+          brightness: 60%
+          effect: fast pulse 
+      - delay: 2s
+      - light.turn_off:
+          id: led_ww
+      - light.turn_on:
+          id: led_ww           
+          red: 100%
+          green: 0%
+          blue: 0%
+          brightness: 30%
+    on_turn_off:
+      - micro_wake_word.start:
+      - light.turn_on:
+          id: led_ww           
+          red: 0%
+          green: 100%
+          blue: 0%
+          brightness: 60%
+          effect: fast pulse 
+      - delay: 2s
+      - light.turn_off:
+          id: led_ww 
+
+i2c:
+  sda: GPIO16
+  scl: GPIO15
+  scan: true
+  frequency: 400kHz
+
+display:
+  - platform: ssd1306_i2c
+    id: onboard_display
+    model: "SSD1306 128x64"
+    rotation: 0
+    address: 0x3C
+    update_interval: 2s
+    pages:
+      - id: show_time
+        lambda: |-
+          // Print time in HH:MM format
+          it.strftime(0, 60, id(font1), TextAlign::BASELINE_LEFT, "%H:%M", id(esptime).now());
+      - id: show_thinking
+        lambda: |-
+          it.print(0, 0, id(font1), "Hmm");
+      - id: show_hearing
+        lambda: |-
+          it.print(0, 0, id(font1), "Ja?");
+      - id: show_answering
+        lambda: |-
+          it.print(0, 0, id(font1), "...");
+
+# script for updating the display content
+script:
+  - id: draw_display
+    then:
+      - lambda: |
+          switch(id(voice_assistant_phase)) {
+            case 1:
+              id(onboard_display).show_page(show_time);
+              id(onboard_display).update();
+              break;
+            case 2:
+              id(onboard_display).show_page(show_hearing);
+              id(onboard_display).update();
+              break;
+            case 3:
+              id(onboard_display).show_page(show_thinking);
+              id(onboard_display).update();
+              break;
+            case 4:
+              id(onboard_display).show_page(show_answering);
+              id(onboard_display).update();
+              break;
+          }
+
+light:
+  - platform: esp32_rmt_led_strip
+    id: led_ww
+    rgb_order: GRB
+    pin: GPIO48
+    num_leds: 1
+    rmt_channel: 0
+    chipset: ws2812
+    name: "on board light"
+    effects:
+      - pulse:
+      - pulse:
+          name: "Fast Pulse"
+          transition_length: 0.5s
+          update_interval: 0.5s
+          min_brightness: 0%
+          max_brightness: 100%
+          
+          
+ # Audio and Voice Assistant Config          
+i2s_audio:
+  - id: i2s_in
+    i2s_lrclk_pin: GPIO8  #WS 
+    i2s_bclk_pin: GPIO2 #SCK
+  - id: i2s_speaker
+    i2s_lrclk_pin: GPIO10  #LRC 
+    i2s_bclk_pin: GPIO11 #BLCK
+
+
+microphone:
+  - platform: i2s_audio
+    id: va_mic
+    adc_type: external
+    i2s_din_pin: GPIO4 #SD pin on the INMP441
+    channel: left
+    pdm: false
+    i2s_audio_id: i2s_in
+    bits_per_sample: 32 bit
+    
+speaker:
+    platform: i2s_audio
+    id: va_speaker
+    i2s_audio_id: i2s_speaker
+    dac_type: external
+    i2s_dout_pin: GPIO12   #  DIN Pin of the MAX98357A Audio Amplifier
+    channel: mono
+    bits_per_sample: 32bit
+    timeout: 500ms
+
+font:
+  - file: "https://raw.githubusercontent.com/chriopter/hall-9/main/assets/fonts/arial.ttf"
+    id: font1
+    size: 46
+
+
+# Time configuration (using Home Assistant or NTP server)
+time:
+  - platform: homeassistant
+    id: esptime
