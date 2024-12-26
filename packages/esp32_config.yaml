@@ -2,10 +2,6 @@ button:
   - platform: restart
     name: "ESP32 Restart"
     id: but_rest
-
-# do not enable logging via uart cause only 1 port for esp32c3
-logger:
-  baud_rate: 0
   
 sensor:
   - platform: internal_temperature
