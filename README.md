@@ -56,6 +56,7 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
 1. **Whisper (STT) & Piper (TTS)**
    - Install add-ons
    - Configure both via Wyoming
+   - Piper: Set Noise Scale to 0
 
 2. **LLM of Choice**
    - Example: Ollama (networked) or ChatGPT
