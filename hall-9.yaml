@@ -43,8 +43,7 @@ packages:
     files: 
       - packages/all.yaml
       # Either include all packages maintained here for complete hardware featureset or limit like this by umcommenting
-      # Only use packages/voice_assistant.yaml or packages/voice_assistant_alexa_output.yaml, not both at the same time
-     
+      # voice_assistant_alexa_output.yaml is an optional quirk, not contained in all.yaml
       #- packages/voice_assistant.yaml
       #- packages/voice_assistant_alexa_output.yaml
       #- packages/radar_sensor.yaml
