@@ -3,20 +3,37 @@
 voice_assistant:
   id: va
   microphone: va_mic
+  noise_suppression_level: 4.0
+  volume_multiplier: 1.0
+  conversation_timeout: 30s
   speaker: va_speaker
-  volume_multiplier: 4.0
+  on_tts_start:
+    - light.turn_on:
+        id: led_ww           
+        red: 30%
+        green: 30%
+        blue: 70%
+        brightness: 60%
+        effect: fast pulse 
+    - lambda: id(voice_assistant_phase) = 4;
+    - script.execute: draw_display
+  on_listening:
+    - lambda: id(voice_assistant_phase) = 2;
+    - script.execute: draw_display
   on_stt_end:
-    then:
-      - light.turn_off: led_ww
+    - lambda: id(voice_assistant_phase) = 3;
+    - script.execute: draw_display
+    - light.turn_off: led_ww
   on_error:
-    - micro_wake_word.start:
+    - micro_wake_word.start:  
   on_end:
-    then:
-      - light.turn_off: led_ww
-      - wait_until:
-          not:
-            voice_assistant.is_running:
-      - micro_wake_word.start:
+    - light.turn_off: led_ww
+    - wait_until:
+        not:
+          voice_assistant.is_running:
+    - micro_wake_word.start: 
+    - lambda: id(voice_assistant_phase) = 1;
+    - script.execute: draw_display
 
 micro_wake_word:
   models:
@@ -77,12 +94,49 @@ i2c:
 
 display:
   - platform: ssd1306_i2c
+    id: onboard_display
     model: "SSD1306 128x64"
     rotation: 0
     address: 0x3C
-    update_interval: 5s
-    lambda: |-
-      it.strftime(0, 60, id(font1), TextAlign::BASELINE_LEFT, "%H:%M", id(esptime).now());
+    update_interval: 2s
+    pages:
+      - id: show_time
+        lambda: |-
+          // Print time in HH:MM format
+          it.strftime(0, 60, id(font1), TextAlign::BASELINE_LEFT, "%H:%M", id(esptime).now());
+      - id: show_thinking
+        lambda: |-
+          it.print(0, 0, id(font1), "Hmm");
+      - id: show_hearing
+        lambda: |-
+          it.print(0, 0, id(font1), "Ja?");
+      - id: show_answering
+        lambda: |-
+          it.print(0, 0, id(font1), "...");
+
+# script for updating the display content
+script:
+  - id: draw_display
+    then:
+      - lambda: |
+          switch(id(voice_assistant_phase)) {
+            case 1:
+              id(onboard_display).show_page(show_time);
+              id(onboard_display).update();
+              break;
+            case 2:
+              id(onboard_display).show_page(show_hearing);
+              id(onboard_display).update();
+              break;
+            case 3:
+              id(onboard_display).show_page(show_thinking);
+              id(onboard_display).update();
+              break;
+            case 4:
+              id(onboard_display).show_page(show_answering);
+              id(onboard_display).update();
+              break;
+          }
 
 light:
   - platform: esp32_rmt_led_strip
@@ -136,7 +190,7 @@ speaker:
 font:
   - file: "https://raw.githubusercontent.com/chriopter/hall-9/main/assets/fonts/arial.ttf"
     id: font1
-    size: 32
+    size: 46
 
 
 # Time configuration (using Home Assistant or NTP server)
