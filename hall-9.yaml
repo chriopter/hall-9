@@ -31,6 +31,11 @@ wifi:
 captive_portal:
 
 ####
+
+substitutions:
+  tts_target: "example" # output speaker for external voice output
+  appversion: "1.0.5"
+
 packages:
   global_all: # This name can be anything
     url: https://github.com/chriopter/hall-9
@@ -38,7 +43,10 @@ packages:
     files: 
       - packages/all.yaml
       # Either include all packages maintained here for complete hardware featureset or limit like this by umcommenting
+      # Only use packages/voice_assistant.yaml or packages/voice_assistant_alexa_output.yaml, not both at the same time
+     
       #- packages/voice_assistant.yaml
+      #- packages/voice_assistant_alexa_output.yaml
       #- packages/radar_sensor.yaml
       #- packages/temperature_sensor.yaml
       #- packages/esp32_config.yaml
