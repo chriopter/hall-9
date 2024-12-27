@@ -72,15 +72,7 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
 
 # 🚀 Future To-Dos
 
-### **Future Developments**
-
-- [ESPhome Feature Request #2562](https://github.com/esphome/feature-requests/issues/2562)
-- [HA Community Discussion](https://community.home-assistant.io/t/voice-assistant-wake-word-media-player/634984/9)
-
-### **To-Do**
-
 - Design a new case
-- Update from repo
 - Docker for external Whisper Info
 - Timer
 - Mic Settings
