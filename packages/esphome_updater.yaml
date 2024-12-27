@@ -66,13 +66,15 @@ button:
       - http_request.get:
           id: http_client
           url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
-          capture_response: true  # Enables capturing the response body
+          verify_ssl: false
+          timeout: 30s
+          capture_response: true
           on_response:
             then:
               - lambda: |-
                   // Parse the JSON response to extract the 'tag_name'
                   json::parse_json(body, [](JsonObject root) -> bool {
-                    if (root.contains_key("tag_name")) {
+                    if (root.containsKey("tag_name")) {
                       const char* tag = root["tag_name"].as<const char*>();
                       ESP_LOGD("button", "Latest version: %s", tag);
                       return true;
