@@ -57,6 +57,9 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
    - Install add-ons
    - Configure both via Wyoming
    - Piper: Set Noise Scale to 0
+   - Maybe run Whisper externally "docker run -it -p 10300:10300 -v /Users/christophereller/whisper-server:/data rhasspy/wyoming-whisper \
+    --model small --language de"
+
 
 2. **LLM of Choice**
    - Example: Ollama (networked) or ChatGPT
