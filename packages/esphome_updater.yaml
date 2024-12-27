@@ -55,20 +55,16 @@ binary_sensor:
     lambda: |-
       if (!id(latest_version).has_state()) return false;
       return id(latest_version).state != id(current_version).state;
-    on_state:
-      then:
-        - homeassistant.service:
-            service: persistent_notification.create
-            data:
-              title: "Hall 9 Update Available"
-              message: !lambda |-
-                return "Update available for " + std::string("${friendly_name}") + 
-                       "\nCurrent version: " + id(current_version).state + 
-                       "\nLatest version: " + id(latest_version).state;
-        - homeassistant.service:
-            service: esphome.firmware_update
-            data:
-              device_id: !lambda "return get_mac_address();"
+
+
+update:
+  - platform: template
+    name: "${friendly_name} Firmware"
+    device_class: firmware
+    entity_category: diagnostic
+    initial_version: "${project_version}"
+    latest_version: !lambda |-
+      return id(latest_version_value);
 
 # Define a button to manually check for updates
 
