@@ -96,14 +96,15 @@ button:
                   format: "HTTP request failed!"
                   level: ERROR
 
-# Automatic update check on boot and daily
+# Automatic update check
 interval:
   - interval: 6h
     then:
       - button.press: check_updates
 
-  - platform: startup
-    priority: 600  # After network is fully initialized
-    then:
-      - delay: 30s
-      - button.press: check_updates
+# Automatic update check on startup
+on_boot:
+  priority: 600  # Ensure this runs after the network is fully initialized
+  then:
+    - delay: 30s
+    - button.press: check_updates
