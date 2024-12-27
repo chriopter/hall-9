@@ -34,7 +34,7 @@ text_sensor:
       return std::string("${project_version}");
 
   - platform: template
-    name: "Latest Version"
+    name: "Hall 9 Latest Version"
     id: latest_version
     icon: "mdi:package-variant-closed"
     lambda: |-
@@ -48,7 +48,7 @@ text_sensor:
 # Define a binary sensor to indicate if an update is available
 binary_sensor:
   - platform: template
-    name: "Update Available"
+    name: "Hall 9 Update Available"
     id: update_available
     device_class: update
     lambda: |-
@@ -58,7 +58,7 @@ binary_sensor:
 # Define a button to manually check for updates
 button:
   - platform: template
-    name: "Check for Updates"
+    name: "Hall 9 Check for Updates"
     icon: "mdi:update"
     on_press:
       then:
@@ -66,35 +66,3 @@ button:
             id: http_client
             url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
             capture_response: true  # Capture the response body
-            on_response:
-              then:
-                - lambda: |-
-                    if (response->status_code == 200) {
-                      // Log the full response body for debugging
-                      ESP_LOGD("update", "Response body: %s", response->body.c_str());
-                      
-                      // Parse the JSON response to extract "tag_name"
-                      json::parse_json(response->body, [&](JsonObject root) -> bool {
-                        if (root.containsKey("tag_name")) {
-                          std::string tag = root["tag_name"].as<std::string>();
-                          
-                          // Remove leading 'v' if present (e.g., "v1.2.3" -> "1.2.3")
-                          if (!tag.empty() && tag[0] == 'v') {
-                            tag = tag.substr(1);
-                          }
-                          
-                          // Update the global variable with the latest version
-                          id(latest_version_value) = tag;
-                          
-                          // Publish the new state to the latest_version text sensor
-                          id(latest_version).publish_state(tag.c_str());
-                          
-                          ESP_LOGI("update", "Latest version fetched: %s", tag.c_str());
-                        } else {
-                          ESP_LOGW("update", "'tag_name' not found in the response.");
-                        }
-                        return true;
-                      });
-                    } else {
-                      ESP_LOGW("update", "Failed to fetch latest version: HTTP %d", response->status_code);
-                    }
