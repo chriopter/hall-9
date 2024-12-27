@@ -44,7 +44,7 @@ text_sensor:
       } else {
         return { id(latest_version_value) };
       }
-    update_interval: never  # Manual updates only
+    update_interval: 10s #FOR DEBUGGING
 
 # Define a binary sensor to indicate if an update is available
 binary_sensor:
