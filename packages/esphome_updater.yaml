@@ -11,7 +11,7 @@ esphome:
 # Create text sensors for version tracking
 text_sensor:
   - platform: template
-    name: "Current Version"
+    name: "Hall 9 Installed Version"
     id: current_version
     icon: "mdi:package-variant"
     update_interval: 24h
