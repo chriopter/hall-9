@@ -16,4 +16,4 @@ text_sensor:
     icon: "mdi:package-variant"
     update_interval: 24h
     lambda: |-
-      return "${project_version}";
+      return std::string("${project_version}");
