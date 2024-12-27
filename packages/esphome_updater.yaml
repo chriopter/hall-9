@@ -97,20 +97,6 @@ button:
                   id: update_available
                   state: !lambda |-
                     return id(latest_version_value) != id(current_version).state;
-              - if:
-                  condition:
-                    lambda: |-
-                      return id(latest_version_value) != id(current_version).state;
-                  then:
-                    - homeassistant.service:
-                        service: persistent_notification.create
-                        data:
-                          title: "Hall 9 Update Available"
-                          message: |-
-                            New version ({{ id(latest_version_value) }}) is available for Hall 9.
-                            Current version: {{ id(current_version).state }}
-                            Device: {{ device_name }}
-                            IP: {{ wifi_ip }}
           on_error:
             then:
               - logger.log:
