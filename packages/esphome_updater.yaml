@@ -12,6 +12,7 @@ esphome:
 http_request:
   useragent: esphome/hall-9
   timeout: 10s
+  id: http_client
 
 # Create text sensors for version tracking
 text_sensor:
