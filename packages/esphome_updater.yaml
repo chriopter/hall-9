@@ -8,14 +8,17 @@ esphome:
     name: "chriopter.hall-9"
     version: "${project_version}"
 
-logger:
-  level: DEBUG  # Enable detailed logging for troubleshooting
-
 http_request:
   id: http_client
   useragent: esphome/hall-9
   timeout: 10s
   verify_ssl: true  # Enable SSL verification for security
+
+# Define a global variable to store the latest version
+globals:
+  - id: latest_version_value
+    type: std::string
+    initial_value: ""  # Initially empty
 
 # Define text sensors for version tracking
 text_sensor:
@@ -24,7 +27,7 @@ text_sensor:
     id: current_version
     icon: "mdi:package-variant"
     lambda: |-
-      return "${project_version}";
+      return { "${project_version}" };  # Correctly returning an optional string
     update_interval: never  # No automatic updates needed
 
   - platform: template
@@ -33,9 +36,9 @@ text_sensor:
     icon: "mdi:package-variant-closed"
     lambda: |-
       if (id(latest_version_value).empty()) {
-        return "Unknown";
+        return { "Unknown" };  # Correctly returning an optional string
       } else {
-        return id(latest_version_value).c_str();
+        return { id(latest_version_value) };  # Returning the latest version
       }
     update_interval: never  # Manual updates only
 
@@ -49,12 +52,6 @@ binary_sensor:
       if (!id(latest_version).has_state()) return false;
       return id(latest_version).state != id(current_version).state;
 
-# Define a global variable to store the latest version
-globals:
-  - id: latest_version_value
-    type: std::string
-    initial_value: ""
-
 # Define a button to manually check for updates
 button:
   - platform: template
@@ -65,20 +62,20 @@ button:
         - http_request.get:
             id: http_client
             url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
-            capture_response: true
+            capture_response: true  # Capture the response body
             on_response:
               then:
                 - lambda: |-
                     if (response->status_code == 200) {
                       // Parse the JSON response to extract "tag_name"
-                      json::parse_json(response->body, [&](JsonObject root) -> bool {
+                      json::parse_json(body, [&](JsonObject root) -> bool {
                         if (root.containsKey("tag_name")) {
                           std::string tag = root["tag_name"].as<std::string>();
                           // Remove leading 'v' if present (e.g., "v1.2.3" -> "1.2.3")
                           if (!tag.empty() && tag[0] == 'v') {
                             tag = tag.substr(1);
                           }
-                          // Update the latest_version_value global variable
+                          // Update the global variable with the latest version
                           id(latest_version_value) = tag;
                           // Publish the new state to the latest_version text sensor
                           id(latest_version).publish_state(tag.c_str());
