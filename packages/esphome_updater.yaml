@@ -17,3 +17,45 @@ text_sensor:
     update_interval: 24h
     lambda: |-
       return std::string("${project_version}");
+
+button:
+  - platform: template
+    name: "Check for Updates"
+    icon: "mdi:update"
+    on_press:
+      - text_sensor.template.publish:
+          id: latest_version
+          state: !lambda |-
+            auto resp = id(http_client).get("https://api.github.com/repos/chriopter/hall-9/releases/latest");
+            if (resp.status_code == 200) {
+              // Extract version from response using tag_name
+              int start = resp.body.find("\"tag_name\":\"") + 12;
+              int end = resp.body.find("\"", start);
+              return resp.body.substr(start, end - start);
+            }
+            return id(current_version).state;
+
+- platform: template
+    name: "Latest Version"
+    id: latest_version
+    icon: "mdi:package-variant-closed"
+    update_interval: 24h
+    lambda: |-
+      auto resp = id(http_client).get("https://api.github.com/repos/chriopter/hall-9/releases/latest");
+      if (resp.status_code == 200) {
+        // Extract version from response using tag_name
+        int start = resp.body.find("\"tag_name\":\"") + 12;
+        int end = resp.body.find("\"", start);
+        return resp.body.substr(start, end - start);
+      }
+      return id(current_version).state;
+
+# Binary sensor to detect when update is available
+binary_sensor:
+  - platform: template
+    name: "Update Available"
+    id: update_available
+    device_class: update
+    lambda: |-
+      if (!id(latest_version).has_state()) return false;
+      return id(latest_version).state != id(current_version).state;
