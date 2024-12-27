@@ -1,7 +1,10 @@
 esphome:
   name: hall-9
   friendly_name: Hall 9 Room 1
- 
+  project:
+    name: "chriopter.hall-9"
+    version: "1.0.5"
+    
 esp32:
   board: esp32-s3-devkitc-1
   framework:
@@ -34,7 +37,6 @@ captive_portal:
 
 substitutions:
   tts_target: "example" # output speaker for external voice output
-  project_version: "1.0.5"
 
 packages:
   global_all: # This name can be anything
