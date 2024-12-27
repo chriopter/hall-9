@@ -70,18 +70,25 @@ button:
               then:
                 - lambda: |-
                     if (response->status_code == 200) {
+                      // Log the full response body for debugging
+                      ESP_LOGD("update", "Response body: %s", response->body.c_str());
+                      
                       // Parse the JSON response to extract "tag_name"
-                      json::parse_json(body, [&](JsonObject root) -> bool {
+                      json::parse_json(response->body, [&](JsonObject root) -> bool {
                         if (root.containsKey("tag_name")) {
                           std::string tag = root["tag_name"].as<std::string>();
+                          
                           // Remove leading 'v' if present (e.g., "v1.2.3" -> "1.2.3")
                           if (!tag.empty() && tag[0] == 'v') {
                             tag = tag.substr(1);
                           }
+                          
                           // Update the global variable with the latest version
                           id(latest_version_value) = tag;
+                          
                           // Publish the new state to the latest_version text sensor
                           id(latest_version).publish_state(tag.c_str());
+                          
                           ESP_LOGI("update", "Latest version fetched: %s", tag.c_str());
                         } else {
                           ESP_LOGW("update", "'tag_name' not found in the response.");
