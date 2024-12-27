@@ -58,11 +58,15 @@ binary_sensor:
 # Define a button to manually check for updates
 button:
   - platform: template
-    name: "Hall 9 Check for Updates"
+    name: "Hall 9 Check for Updates" 
     icon: "mdi:update"
     on_press:
-      then:
-        - http_request.get:
-            id: http_client
-            url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
-            capture_response: true  # Capture the response body
+      - http_request.get:
+          id: http_client
+          url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
+          verify_ssl: false
+          timeout: 30s
+      - logger.log:
+          format: "Latest version: %s"
+          args: ["{{ http_client.response }}.tag_name"]
+          level: DEBUG
