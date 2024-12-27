@@ -1,8 +1,3 @@
-esphome:
-  project:
-    name: "chriopter.hall-9"
-    version: "1.0.5"  # Use the substitution
-
 text_sensor:
   - platform: template
     name: "Hall 9 Project Version"
