@@ -63,19 +63,29 @@ button:
     name: "Hall 9 Check for Updates"
     icon: "mdi:update"
     on_press:
-      - http_request.get:
+        - http_request.get:
           id: http_client
           url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
-      - lambda: |-
-          if (id(http_client).has_response()) {
-            auto response = id(http_client).get_response();
-            if (response->success) {
-              // Parse the JSON response to extract the tag_name
-              const char* tag = response->json["tag_name"].as<const char*>();
-              ESP_LOGD("button", "Latest version: %s", tag);
-            } else {
-              ESP_LOGD("button", "HTTP request failed with status code: %d", response->status_code);
-            }
-          } else {
-            ESP_LOGD("button", "No response received");
-          }
+          capture_response: true  # Enables capturing the response body
+          on_response:
+            then:
+              - lambda: |-
+                  // Parse the JSON response to extract the 'tag_name'
+                  json::parse_json(body, [](JsonObject root) -> bool {
+                    if (root.contains_key("tag_name")) {
+                      const char* tag = root["tag_name"].as<const char*>();
+                      ESP_LOGD("button", "Latest version: %s", tag);
+                      return true;
+                    } else {
+                      ESP_LOGD("button", "No 'tag_name' found in the JSON response.");
+                      return false;
+                    }
+                  });
+              - logger.log:
+                  format: "Update check completed."
+                  level: DEBUG
+          on_error:
+            then:
+              - logger.log:
+                  format: "HTTP request failed!"
+                  level: ERROR
