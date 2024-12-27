@@ -13,9 +13,9 @@ http_request:
   useragent: esphome/hall-9
   timeout: 10s
   id: http_client
-  verify_ssl: false
+  verify_ssl: false  # Consider setting to true for security
 
-# Create text sensors for version tracking
+# JSON Text Sensor for Latest Version
 text_sensor:
   - platform: template
     name: "Hall 9 Installed Version"
@@ -24,32 +24,21 @@ text_sensor:
     update_interval: 24h
     lambda: |-
       return std::string("${project_version}");
-      
-  - platform: template
+
+  - platform: json
     name: "Latest Version"
     id: latest_version
     icon: "mdi:package-variant-closed"
+    json_url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
     update_interval: 24h
-    on_value:
+    json_path: "$.tag_name"
+    on_json_received:
       then:
-        - http_request.get:
-            url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
-            on_response:
-              then:
-                lambda: |-
-                  if (response->status_code == 200) {
-                    std::string data = response->data;
-                    size_t start = data.find("\"tag_name\":\"");
-                    if (start != std::string::npos) {
-                      start += 12;  // Length of "\"tag_name\":\""
-                      size_t end = data.find("\"", start);
-                      if (end != std::string::npos) {
-                        auto version = data.substr(start, end - start);
-                        id(latest_version).publish_state(version);
-                      }
-                    }
-                  }
+        - text_sensor.template.publish:
+            id: latest_version
+            state: !lambda "return x;"
 
+# Button to Check for Updates Manually
 button:
   - platform: template
     name: "Check for Updates"
@@ -57,22 +46,17 @@ button:
     on_press:
       then:
         - http_request.get:
+            id: http_client
             url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
             on_response:
               then:
-                lambda: |-
-                  if (response->status_code == 200) {
-                    std::string data = response->data;
-                    size_t start = data.find("\"tag_name\":\"");
-                    if (start != std::string::npos) {
-                      start += 12;  // Length of "\"tag_name\":\""
-                      size_t end = data.find("\"", start);
-                      if (end != std::string::npos) {
-                        auto version = data.substr(start, end - start);
-                        id(latest_version).publish_state(version);
-                      }
+                - lambda: |-
+                    if (response->status_code == 200) {
+                      // Publish the latest version using JSON parsing
+                      id(latest_version).publish_state(response->body);
+                    } else {
+                      ESP_LOGW("update", "Failed to fetch latest version: HTTP %d", response->status_code);
                     }
-                  }
 
 # Binary sensor to detect when update is available
 binary_sensor:
