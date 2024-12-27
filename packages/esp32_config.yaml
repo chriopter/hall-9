@@ -1,3 +1,28 @@
+esphome:
+  platformio_options:
+    board_build.flash_mode: dio
+  on_boot:
+    - light.turn_on:
+        id: led_ww
+        blue: 100%
+        brightness: 60%
+        effect: fast pulse
+    - speaker.volume_set: 1.0
+
+api:
+  on_client_connected:
+    then:
+      - delay: 50ms
+      - light.turn_off: led_ww
+      - micro_wake_word.start:
+  on_client_disconnected:
+    then:
+      - voice_assistant.stop: 
+
+psram:
+  mode: octal  # quad for N8R2 and octal for N16R8
+  speed: 80MHz
+    
 button:
   - platform: restart
     name: "ESP32 Restart"
@@ -14,27 +39,4 @@ sensor:
     update_interval: 60s
     unit_of_measurement: "s" # You can set this to "minutes" or "hours" as needed
 
-esphome:
-  platformio_options:
-    board_build.flash_mode: dio
-  on_boot:
-    - light.turn_on:
-        id: led_ww
-        blue: 100%
-        brightness: 60%
-        effect: fast pulse
-    - speaker.volume_set: 1.0
 
-psram:
-  mode: octal  # quad for N8R2 and octal for N16R8
-  speed: 80MHz
-
-api:
-  on_client_connected:
-    then:
-      - delay: 50ms
-      - light.turn_off: led_ww
-      - micro_wake_word.start:
-  on_client_disconnected:
-    then:
-      - voice_assistant.stop: 
