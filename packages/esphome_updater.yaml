@@ -13,6 +13,7 @@ http_request:
   useragent: esphome/hall-9
   timeout: 10s
   id: http_client
+  verify_ssl: false
 
 # Create text sensors for version tracking
 text_sensor:
@@ -33,7 +34,6 @@ text_sensor:
       then:
         - http_request.get:
             url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
-            verify_ssl: false
             on_response:
               then:
                 lambda: |-
@@ -58,7 +58,6 @@ button:
       then:
         - http_request.get:
             url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
-            verify_ssl: false
             on_response:
               then:
                 lambda: |-
