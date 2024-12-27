@@ -56,16 +56,6 @@ binary_sensor:
       if (!id(latest_version).has_state()) return false;
       return id(latest_version).state != id(current_version).state;
 
-
-update:
-  - platform: template
-    name: "${friendly_name} Firmware"
-    device_class: firmware
-    entity_category: diagnostic
-    initial_version: "${project_version}"
-    latest_version: !lambda |-
-      return id(latest_version_value);
-
 # Define a button to manually check for updates
 
 # Define the button
