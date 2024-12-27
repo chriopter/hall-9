@@ -66,8 +66,6 @@ button:
       - http_request.get:
           id: http_client
           url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
-          verify_ssl: false  # Consider setting this to true for security
-          timeout: 30s
       - lambda: |-
           if (id(http_client).has_response()) {
             auto response = id(http_client).get_response();
