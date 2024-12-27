@@ -98,7 +98,7 @@ button:
                   state: !lambda |-
                     return id(latest_version_value) != id(current_version).state;
               - if:
-                condition:
+                  condition:
                     lambda: |-
                       return id(latest_version_value) != id(current_version).state;
                   then:
