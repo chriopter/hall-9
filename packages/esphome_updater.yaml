@@ -32,7 +32,7 @@ text_sensor:
     lambda: |-
       auto resp = id(http_client).get("https://api.github.com/repos/chriopter/hall-9/releases/latest");
       if (resp != nullptr && resp->status_code == 200) {
-        std::string body = resp->body;
+        std::string body = resp->get_string();
         size_t start = body.find("\"tag_name\":\"");
         if (start != std::string::npos) {
           start += 12;  // Length of "\"tag_name\":\""
@@ -54,7 +54,7 @@ button:
           state: !lambda |-
             auto resp = id(http_client).get("https://api.github.com/repos/chriopter/hall-9/releases/latest");
             if (resp != nullptr && resp->status_code == 200) {
-              std::string body = resp->body;
+              std::string body = resp->get_string();
               size_t start = body.find("\"tag_name\":\"");
               if (start != std::string::npos) {
                 start += 12;  // Length of "\"tag_name\":\""
