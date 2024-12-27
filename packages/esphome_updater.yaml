@@ -44,7 +44,7 @@ text_sensor:
       } else {
         return { id(latest_version_value) };
       }
-    update_interval: 10s #FOR DEBUGGING
+    update_interval: 24h
 
 # Define a binary sensor to indicate if an update is available
 binary_sensor:
@@ -87,6 +87,14 @@ button:
               - logger.log:
                   format: "Update check completed."
                   level: DEBUG
+              - text_sensor.template.publish:
+                  id: latest_version
+                  state: !lambda |-
+                    return id(latest_version_value);
+              - binary_sensor.template.publish:
+                  id: update_available
+                  state: !lambda |-
+                    return id(latest_version_value) != id(current_version).state;
           on_error:
             then:
               - logger.log:
