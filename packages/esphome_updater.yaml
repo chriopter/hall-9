@@ -1,5 +1,5 @@
 substitutions:
-  project_version: "1.1"  # Define the version number once here
+  project_version: "1.1.1"  # Define the version number once here
 
 esphome:
   name: hall-9
