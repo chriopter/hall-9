@@ -1,6 +1,6 @@
 # Define Project Version
 substitutions:
-  project_version: "1.2.1"  # Define the version number once here, updated by release management
+  project_version: "1.2.2"  # Define the version number once here, updated by release management
 
 esphome:
   name: hall-9
