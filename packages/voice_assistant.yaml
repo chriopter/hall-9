@@ -1,9 +1,78 @@
 # Contails Microphone, Speaker, Voice Assistant, Status Light and Display Configuration
 
+ # Hardware 
+i2s_audio:
+  - id: i2s_in
+    i2s_lrclk_pin: GPIO8  #WS 
+    i2s_bclk_pin: GPIO2 #SCK
+  - id: i2s_speaker
+    i2s_lrclk_pin: GPIO10  #LRC 
+    i2s_bclk_pin: GPIO11 #BLCK
+
+i2c:
+  sda: GPIO16
+  scl: GPIO15
+  scan: true
+  frequency: 400kHz
+
+light:
+  - platform: esp32_rmt_led_strip
+    id: led_ww
+    rgb_order: GRB
+    pin: GPIO48
+    num_leds: 1
+    rmt_channel: 0
+    chipset: ws2812
+    name: "on board light"
+    effects:
+      - pulse:
+      - pulse:
+          name: "Fast Pulse"
+          transition_length: 0.5s
+          update_interval: 0.5s
+          min_brightness: 0%
+          max_brightness: 100%
+
+microphone:
+  - platform: i2s_audio
+    id: va_mic
+    adc_type: external
+    i2s_din_pin: GPIO4 #SD pin on the INMP441
+    channel: left
+    pdm: false
+    i2s_audio_id: i2s_in
+    bits_per_sample: 32 bit
+    
+speaker:
+    platform: i2s_audio
+    id: va_speaker
+    i2s_audio_id: i2s_speaker
+    dac_type: external
+    i2s_dout_pin: GPIO12   #  DIN Pin of the MAX98357A Audio Amplifier
+    channel: mono
+    bits_per_sample: 32bit
+    timeout: 500ms
+
+# Voice Assistant
+
 globals:
   - id: voice_assistant_phase
     type: int
     initial_value: '1'  # Starting phase
+
+micro_wake_word:
+  models:
+    - model: okay_nabu
+  on_wake_word_detected:
+    - voice_assistant.start:
+        wake_word: !lambda return wake_word;
+    - light.turn_on:
+        id: led_ww
+        red: 30%
+        green: 30%
+        blue: 70%
+        brightness: 60%
+        effect: fast pulse
     
 voice_assistant:
   id: va
@@ -39,20 +108,6 @@ voice_assistant:
     - micro_wake_word.start: 
     - lambda: id(voice_assistant_phase) = 1;
     - script.execute: draw_display
-
-micro_wake_word:
-  models:
-    - model: okay_nabu
-  on_wake_word_detected:
-    - voice_assistant.start:
-        wake_word: !lambda return wake_word;
-    - light.turn_on:
-        id: led_ww
-        red: 30%
-        green: 30%
-        blue: 70%
-        brightness: 60%
-        effect: fast pulse
 
 switch:
   - platform: template
@@ -90,13 +145,7 @@ switch:
       - delay: 2s
       - light.turn_off:
           id: led_ww 
-
-i2c:
-  sda: GPIO16
-  scl: GPIO15
-  scan: true
-  frequency: 400kHz
-
+          
 display:
   - platform: ssd1306_i2c
     id: onboard_display
@@ -142,55 +191,6 @@ script:
               id(onboard_display).update();
               break;
           }
-
-light:
-  - platform: esp32_rmt_led_strip
-    id: led_ww
-    rgb_order: GRB
-    pin: GPIO48
-    num_leds: 1
-    rmt_channel: 0
-    chipset: ws2812
-    name: "on board light"
-    effects:
-      - pulse:
-      - pulse:
-          name: "Fast Pulse"
-          transition_length: 0.5s
-          update_interval: 0.5s
-          min_brightness: 0%
-          max_brightness: 100%
-          
-          
- # Audio and Voice Assistant Config          
-i2s_audio:
-  - id: i2s_in
-    i2s_lrclk_pin: GPIO8  #WS 
-    i2s_bclk_pin: GPIO2 #SCK
-  - id: i2s_speaker
-    i2s_lrclk_pin: GPIO10  #LRC 
-    i2s_bclk_pin: GPIO11 #BLCK
-
-
-microphone:
-  - platform: i2s_audio
-    id: va_mic
-    adc_type: external
-    i2s_din_pin: GPIO4 #SD pin on the INMP441
-    channel: left
-    pdm: false
-    i2s_audio_id: i2s_in
-    bits_per_sample: 32 bit
-    
-speaker:
-    platform: i2s_audio
-    id: va_speaker
-    i2s_audio_id: i2s_speaker
-    dac_type: external
-    i2s_dout_pin: GPIO12   #  DIN Pin of the MAX98357A Audio Amplifier
-    channel: mono
-    bits_per_sample: 32bit
-    timeout: 500ms
 
 font:
   - file: "https://raw.githubusercontent.com/chriopter/hall-9/main/assets/fonts/arial.ttf"
