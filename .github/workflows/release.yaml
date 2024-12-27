@@ -18,7 +18,7 @@ jobs:
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
       - name: Update version in YAML
         run: |
-          sed -i "s/version: \".*\"/version: \"${{ steps.get_version.outputs.VERSION }}\"/" hall-9.yaml
+          sed -i "s/version: \".*\"/version: \"${{ steps.get_version.outputs.VERSION }}\"/" packages/esphome_updater.yaml
       - name: Commit changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
