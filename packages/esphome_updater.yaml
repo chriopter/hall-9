@@ -37,8 +37,8 @@ text_sensor:
             on_response:
               then:
                 lambda: |-
-                  if (response.code == 200) {
-                    std::string data = response.body;
+                  if (response->status_code == 200) {
+                    std::string data = response->data;
                     size_t start = data.find("\"tag_name\":\"");
                     if (start != std::string::npos) {
                       start += 12;  // Length of "\"tag_name\":\""
@@ -61,8 +61,8 @@ button:
             on_response:
               then:
                 lambda: |-
-                  if (response.code == 200) {
-                    std::string data = response.body;
+                  if (response->status_code == 200) {
+                    std::string data = response->data;
                     size_t start = data.find("\"tag_name\":\"");
                     if (start != std::string::npos) {
                       start += 12;  // Length of "\"tag_name\":\""
