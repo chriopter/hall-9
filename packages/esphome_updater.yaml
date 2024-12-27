@@ -76,6 +76,7 @@ button:
                   json::parse_json(body, [](JsonObject root) -> bool {
                     if (root.containsKey("tag_name")) {
                       const char* tag = root["tag_name"].as<const char*>();
+                      id(latest_version_value) = tag;
                       ESP_LOGD("button", "Latest version: %s", tag);
                       return true;
                     } else {
