@@ -64,9 +64,12 @@ button:
       - http_request.get:
           id: http_client
           url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
-          verify_ssl: false
-          timeout: 30s
-      - logger.log:
-          format: "Latest version: %s"
-          args: ["{{ http_client.response }}.tag_name"]
-          level: DEBUG
+      - lambda: |-
+          auto response = http_client.response;
+          if (response.success) {
+            // Parse the JSON response to extract the tag_name
+            std::string tag = response.json["tag_name"].as<std::string>();
+            ESP_LOGD("button", "Latest version: %s", tag.c_str());
+          } else {
+            ESP_LOGD("button", "HTTP request failed");
+          }
