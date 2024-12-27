@@ -64,6 +64,7 @@ button:
   - platform: template
     name: "Hall 9 Check for Updates"
     icon: "mdi:update"
+    id: check_updates
     on_press:
       - http_request.get:
           id: http_client
