@@ -31,11 +31,16 @@ text_sensor:
     update_interval: 24h
     lambda: |-
       auto resp = id(http_client).get("https://api.github.com/repos/chriopter/hall-9/releases/latest");
-      if (resp.status_code == 200) {
-        // Extract version from response using tag_name
-        int start = resp.body.find("\"tag_name\":\"") + 12;
-        int end = resp.body.find("\"", start);
-        return resp.body.substr(start, end - start);
+      if (resp != nullptr && resp->status_code == 200) {
+        std::string body = resp->body;
+        size_t start = body.find("\"tag_name\":\"");
+        if (start != std::string::npos) {
+          start += 12;  // Length of "\"tag_name\":\""
+          size_t end = body.find("\"", start);
+          if (end != std::string::npos) {
+            return body.substr(start, end - start);
+          }
+        }
       }
       return id(current_version).state;
 
@@ -48,11 +53,16 @@ button:
           id: latest_version
           state: !lambda |-
             auto resp = id(http_client).get("https://api.github.com/repos/chriopter/hall-9/releases/latest");
-            if (resp.status_code == 200) {
-              // Extract version from response using tag_name
-              int start = resp.body.find("\"tag_name\":\"") + 12;
-              int end = resp.body.find("\"", start);
-              return resp.body.substr(start, end - start);
+            if (resp != nullptr && resp->status_code == 200) {
+              std::string body = resp->body;
+              size_t start = body.find("\"tag_name\":\"");
+              if (start != std::string::npos) {
+                start += 12;  // Length of "\"tag_name\":\""
+                size_t end = body.find("\"", start);
+                if (end != std::string::npos) {
+                  return body.substr(start, end - start);
+                }
+              }
             }
             return id(current_version).state;
 
