@@ -8,6 +8,12 @@ esphome:
   project:
     name: "chriopter.hall-9"
     version: "${project_version}"
+# Automatic update check on startup
+  on_boot:
+    priority: 600  # Ensure this runs after the network is fully initialized
+    then:
+      - delay: 30s
+      - button.press: check_updates
 
 # Define text sensors for version tracking
 
@@ -102,9 +108,4 @@ interval:
     then:
       - button.press: check_updates
 
-# Automatic update check on startup
-on_boot:
-  priority: 600  # Ensure this runs after the network is fully initialized
-  then:
-    - delay: 30s
-    - button.press: check_updates
+
