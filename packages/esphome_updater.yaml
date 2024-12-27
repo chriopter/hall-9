@@ -16,6 +16,7 @@ http_request:
   useragent: esphome/hall-9
   timeout: 10s
   verify_ssl: true  # Enable SSL verification for security
+  max_response_buffer_size: 10240
 
 # Define a global variable to store the latest version
 globals:
