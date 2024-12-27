@@ -1,5 +1,6 @@
+# Define Project Version
 substitutions:
-  project_version: "1.2"  # Define the version number once here
+  project_version: "1.2"  # Define the version number once here, updated by release management
 
 esphome:
   name: hall-9
@@ -8,23 +9,13 @@ esphome:
     name: "chriopter.hall-9"
     version: "${project_version}"
 
-logger:
-  level: DEBUG  # Enable detailed logging for troubleshooting
+# Define text sensors for version tracking
 
-http_request:
-  id: http_client
-  useragent: esphome/hall-9
-  timeout: 10s
-  verify_ssl: true  # Enable SSL verification for security
-
-
-# Define a global variable to store the latest version
 globals:
   - id: latest_version_value
     type: std::string
     initial_value: ""  # Initially empty
 
-# Define text sensors for version tracking
 text_sensor:
   - platform: template
     name: "Hall 9 Installed Version"
@@ -46,7 +37,6 @@ text_sensor:
       }
     update_interval: 24h
 
-# Define a binary sensor to indicate if an update is available
 binary_sensor:
   - platform: template
     name: "Hall 9 Update Available"
@@ -58,7 +48,12 @@ binary_sensor:
 
 # Define a button to manually check for updates
 
-# Define the button
+http_request:
+  id: http_client
+  useragent: esphome/hall-9
+  timeout: 10s
+  verify_ssl: true  # Enable SSL verification for security
+
 button:
   - platform: template
     name: "Hall 9 Check for Updates"
@@ -100,3 +95,15 @@ button:
               - logger.log:
                   format: "HTTP request failed!"
                   level: ERROR
+
+# Automatic update check on boot and daily
+interval:
+  - interval: 6h
+    then:
+      - button.press: check_updates
+
+  - platform: startup
+    priority: 600  # After network is fully initialized
+    then:
+      - delay: 30s
+      - button.press: check_updates
