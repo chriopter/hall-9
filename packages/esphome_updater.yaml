@@ -29,9 +29,9 @@ text_sensor:
     name: "Hall 9 Installed Version"
     id: current_version
     icon: "mdi:package-variant"
+    update_interval: 24h
     lambda: |-
-      return { "${project_version}" };
-    update_interval: never  # No automatic updates needed
+      return std::string("${project_version}");
 
   - platform: template
     name: "Latest Version"
