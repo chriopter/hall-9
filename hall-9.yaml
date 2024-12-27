@@ -34,7 +34,7 @@ captive_portal:
 
 substitutions:
   tts_target: "example" # output speaker for external voice output
-  appversion: "1.0.5"
+  project_version: "1.0.5"
 
 packages:
   global_all: # This name can be anything
