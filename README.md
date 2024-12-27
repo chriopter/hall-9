@@ -82,3 +82,5 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
 - Design a new case
 - Update from repo
 - Docker for external Whisper Info
+- Timer
+- Mic Settings
