@@ -63,7 +63,7 @@ button:
     name: "Hall 9 Check for Updates"
     icon: "mdi:update"
     on_press:
-        - http_request.get:
+      - http_request.get:
           id: http_client
           url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
           capture_response: true  # Enables capturing the response body
