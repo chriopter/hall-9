@@ -16,7 +16,7 @@ http_request:
   useragent: esphome/hall-9
   timeout: 10s
   verify_ssl: true  # Enable SSL verification for security
-  max_response_buffer_size: 10240
+
 
 # Define a global variable to store the latest version
 globals:
@@ -68,6 +68,7 @@ button:
           id: http_client
           url: "https://api.github.com/repos/chriopter/hall-9/releases/latest"
           capture_response: true
+          max_response_buffer_size: 10240
           on_response:
             then:
               - lambda: |-
