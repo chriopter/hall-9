@@ -103,7 +103,7 @@ button:
                       return id(latest_version_value) != id(current_version).state;
                   then:
                     - homeassistant.service:
-                        service: notify_update
+                        service: persistent_notification.create
                         data:
                           message: !lambda |-
                             return "A new version (" + id(latest_version_value) + 
