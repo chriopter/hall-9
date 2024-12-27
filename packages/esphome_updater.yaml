@@ -97,6 +97,20 @@ button:
                   id: update_available
                   state: !lambda |-
                     return id(latest_version_value) != id(current_version).state;
+              - if:
+                condition:
+                    lambda: |-
+                      return id(latest_version_value) != id(current_version).state;
+                  then:
+                    - api.service:
+                        service: notify_update
+                        data:
+                          message: !lambda |-
+                            return "A new version (" + id(latest_version_value) + 
+                                   ") is available for Hall 9.\n" +
+                                   "Current version: " + id(current_version).state + "\n" +
+                                   "Device: " + App.get_name() + "\n" +
+                                   "IP: " + WiFi.get_ip_address().str();
           on_error:
             then:
               - logger.log:
