@@ -8,6 +8,9 @@ esphome:
     name: "chriopter.hall-9"
     version: "${project_version}"
 
+logger:
+  level: DEBUG  # Enable detailed logging for troubleshooting
+
 http_request:
   id: http_client
   useragent: esphome/hall-9
@@ -27,7 +30,7 @@ text_sensor:
     id: current_version
     icon: "mdi:package-variant"
     lambda: |-
-      return { "${project_version}" };  # Correctly returning an optional string
+      return { "${project_version}" };
     update_interval: never  # No automatic updates needed
 
   - platform: template
@@ -36,9 +39,9 @@ text_sensor:
     icon: "mdi:package-variant-closed"
     lambda: |-
       if (id(latest_version_value).empty()) {
-        return { "Unknown" };  # Correctly returning an optional string
+        return { "Unknown" };
       } else {
-        return { id(latest_version_value) };  # Returning the latest version
+        return { id(latest_version_value) };
       }
     update_interval: never  # Manual updates only
 
