@@ -179,9 +179,6 @@ number:
     initial_value: 255
     restore_value: true
     mode: slider
-    set_action:
-      - lambda: |-
-          id(onboard_display).set_contrast(x);
 
 # script for updating the display content
 script:
