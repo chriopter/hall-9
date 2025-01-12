@@ -58,7 +58,7 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
    - Configure both via Wyoming
    - Piper: Set Noise Scale to 0
    - Maybe run Whisper externally
-   - docker run -it -p 10300:10300 -v /Users/christophereller/whisper-server:/data rhasspy/wyoming-whisper --model base --language de --beam-size 2 --initial-prompt "nachfolgend ist eine deutsche Untehraltung zur Steuerung eines Smart Homesystems. Wörter wie Licht, Rolladen und ähnliches werden verwendet."
+   - docker run -it -p 10300:10300 -v /Users/chriopter/whisper-server:/data rhasspy/wyoming-whisper --model base --language de --beam-size 2 --initial-prompt "nachfolgend ist eine deutsche Untehraltung zur Steuerung eines Smart Homesystems. Wörter wie Licht, Rolladen und ähnliches werden verwendet."
 
 
 2. **LLM of Choice**
