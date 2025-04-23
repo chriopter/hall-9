@@ -20,19 +20,11 @@ light:
     id: led_ww
     rgb_order: GRB
     pin: GPIO48
+    rmt_symbols: 96 
     num_leds: 1
-    rmt_channel: 0
     chipset: ws2812
     name: "on board light"
-    effects:
-      - pulse:
-      - pulse:
-          name: "Fast Pulse"
-          transition_length: 0.5s
-          update_interval: 0.5s
-          min_brightness: 0%
-          max_brightness: 100%
-
+   
 microphone:
   - platform: i2s_audio
     id: va_mic
@@ -62,7 +54,8 @@ globals:
 
 micro_wake_word:
   models:
-    - model: okay_nabu
+    - model: github://esphome/micro-wake-word-models/models/v2/okay_nabu.json
+
   on_wake_word_detected:
     - voice_assistant.start:
         wake_word: !lambda return wake_word;
@@ -72,7 +65,6 @@ micro_wake_word:
         green: 30%
         blue: 70%
         brightness: 60%
-        effect: fast pulse
     
 voice_assistant:
   id: va
@@ -88,7 +80,6 @@ voice_assistant:
         green: 30%
         blue: 70%
         brightness: 60%
-        effect: fast pulse 
     - lambda: id(voice_assistant_phase) = 4;
     - script.execute: draw_display
   on_listening:
@@ -123,7 +114,6 @@ switch:
           green: 0%
           blue: 0%
           brightness: 60%
-          effect: fast pulse 
       - delay: 2s
       - light.turn_off:
           id: led_ww
@@ -141,7 +131,6 @@ switch:
           green: 100%
           blue: 0%
           brightness: 60%
-          effect: fast pulse 
       - delay: 2s
       - light.turn_off:
           id: led_ww 
