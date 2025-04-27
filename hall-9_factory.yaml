@@ -1,0 +1,50 @@
+esphome:
+  name: hall-9
+  friendly_name: Hall 9 Room 1
+    
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "990limTqrMH+hZO2Eg6kvbDyueKOd0y5IBtEpieOnCY="
+
+ota:
+  - platform: esphome
+    password: "example"
+
+wifi:
+  ssid: "example"
+  password: "12345678"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Hall-9"
+    password: "12345678"
+
+captive_portal:
+
+####
+
+substitutions:
+  tts_target: "example" # output speaker for external voice output
+
+packages:
+  global_all: # This name can be anything
+    url: https://github.com/chriopter/hall-9
+    ref: main
+    files: 
+      - /hall-9.yaml
+      # Optionally include packages for modules
+      #- packages/voice_assistant_alexa_output.yaml
+      #- packages/radar_sensor.yaml
+      #- packages/temperature_sensor.yaml
+      #- packages/esp32_config.yaml
+    refresh: 0d
+    
