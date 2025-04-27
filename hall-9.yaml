@@ -1,6 +1,4 @@
 esphome:
-  platformio_options:
-    board_build.flash_mode: dio
   on_boot:
     - light.turn_on:
         id: led_ww
