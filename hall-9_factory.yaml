@@ -36,15 +36,16 @@ substitutions:
   tts_target: "example" # output speaker for external voice output
 
 packages:
-  global_all: # This name can be anything
+  Hall 9: # This name can be anything
     url: https://github.com/chriopter/hall-9
     ref: main
     files: 
       - /hall-9.yaml
-      # Optionally include packages for modules
-      #- packages/voice_assistant_alexa_output.yaml
+    refresh: 0d
+  additional_modules: # This name can be anything
+    url: https://github.com/chriopter/ha-collector
+    ref: main
+    files: 
       #- packages/radar_sensor.yaml
       #- packages/temperature_sensor.yaml
-      #- packages/esp32_config.yaml
-    refresh: 0d
-    
+      #- packages/voice_assistant_alexa_output.yaml

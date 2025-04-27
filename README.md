@@ -38,9 +38,10 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
 1. **ESP32 Deployment**
    - Create a standard config in ESPHome
    - Set `framework: esp-idf`
+   - Or look at factory.yaml
 
 2. **Packages**
-   - Include packages from [hall-9.yaml](hall-9.yaml) or selectively by umcommenting
+   - Include packages from [hall-9_factory.yaml](hall-9_factory.yaml) or selectively by umcommenting
    - Changes are automatically pulled by ESPHome upon updating
 
 3. **Speech End Detection**
