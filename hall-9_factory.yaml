@@ -44,3 +44,4 @@ packages:
 #      - packages/radar_sensor.yaml
 #      - packages/temperature_sensor.yaml
 #      - packages/voice_assistant_alexa_output.yaml
+    refresh: 0d
