@@ -41,11 +41,6 @@ packages:
     ref: main
     files: 
       - hall-9.yaml
-    refresh: 0d
-#  additional_modules: # This name can be anything
-#    url: https://github.com/chriopter/ha-collector
-#    ref: main
-#    files: 
 #      - packages/radar_sensor.yaml
 #      - packages/temperature_sensor.yaml
 #      - packages/voice_assistant_alexa_output.yaml

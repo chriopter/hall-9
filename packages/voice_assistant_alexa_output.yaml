@@ -1,0 +1,8 @@
+# Quirk to output sound to alexa (need to define tts_target manually)
+voice_assistant:
+  on_tts_start:
+    - homeassistant.service:
+        service: notify.alexa_media
+        data:
+          message: !lambda 'return x;'
+          target: ${tts_target}

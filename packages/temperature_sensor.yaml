@@ -1,0 +1,10 @@
+# Temperature and Humidity
+sensor:
+  - platform: dht
+    pin: GPIO17
+    model: DHT22
+    temperature:
+      name: "Temperature"
+    humidity:
+      name: "Humidity"
+    update_interval: 60s

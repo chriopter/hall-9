@@ -1,0 +1,82 @@
+# LD2410 Radar
+
+uart:
+  id: uart2410
+  tx_pin: GPIO20
+  rx_pin: GPIO21
+  baud_rate: 256000
+  parity: NONE
+  stop_bits: 1
+
+ld2410:
+  uart_id: uart2410
+  throttle: 1000ms
+
+binary_sensor:
+  - platform: ld2410
+    has_target:
+      name: "Radar Presence"
+    has_moving_target:
+      name: "Radar Moving Target"
+    has_still_target:
+      name: "Radar Still Target"
+
+sensor:
+  - platform: ld2410
+    light:
+      name: "Radar light"
+    moving_distance:
+      name: "Radar Moving Distance"
+    still_distance:
+      name: "Radar Still Distance"
+    moving_energy:
+      name: "Radar Move Energy"
+    still_energy:
+      name: "Radar Still Energy"
+    detection_distance:
+      name: "Radar Detection Distance"
+
+number:
+  - platform: ld2410
+    timeout:
+      name: "Radar timeout"
+    light_threshold:
+      name: "Radar light threshold"
+    max_move_distance_gate:
+      name: "Radar max move distance gate"
+    max_still_distance_gate:
+      name: "Radar max still distance gate"
+    
+text_sensor:
+  - platform: ld2410
+    version:
+      name: "Radar firmware version"
+    mac_address:
+      name: "Radar mac address"
+
+select:
+  - platform: ld2410
+    distance_resolution:
+      name: "Radar distance resolution"
+    baud_rate:
+      name: "Radar baud rate"
+    light_function:
+      name: "Radar light function"
+    out_pin_level:
+      name: "Radar out pin level"
+
+button:
+  - platform: ld2410
+    factory_reset:
+      name: "Radar factory reset"
+    restart:
+      name: "Radar restart"
+    query_params:
+      name: "query params"
+
+switch:
+  - platform: ld2410
+    engineering_mode:
+      name: "Radar engineering mode"
+    bluetooth:
+      name: "Radar control bluetooth"
