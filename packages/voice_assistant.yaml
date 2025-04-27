@@ -53,7 +53,7 @@ globals:
 
 micro_wake_word:
   models:
-    - model: https://github.com/kahrendt/microWakeWord/releases/download/okay_nabu_20241226.3/okay_nabu.json
+    - model: github://esphome/micro-wake-word-models/models/v2/okay_nabu.json
 
   on_wake_word_detected:
     - voice_assistant.start:
