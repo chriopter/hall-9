@@ -40,7 +40,7 @@ packages:
     url: https://github.com/chriopter/hall-9
     ref: main
     files: 
-      - /hall-9.yaml
+      - hall-9.yaml
     refresh: 0d
 #  additional_modules: # This name can be anything
 #    url: https://github.com/chriopter/ha-collector
