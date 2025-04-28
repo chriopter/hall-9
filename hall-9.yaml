@@ -76,8 +76,6 @@ microphone:
     pdm: false      # INMP441 uses I2S not PDM
     i2s_audio_id: i2s_in
     bits_per_sample: 32 bit  # Maximum quality audio capture
-    gain: 2.5  # Amplifies input signal - 2.5 provides good voice pickup without distortion
-    sigma_delta_oversample: 4  # Higher values reduce noise but increase latency - 4 is a good balance
     
 speaker:
     platform: i2s_audio
