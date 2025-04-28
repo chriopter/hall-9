@@ -23,7 +23,7 @@ wifi:
   ssid: "example"
   password: "12345678"
   output_power: 8.5dB
-# Somehow helps to prevent crashes on wake word streamin start
+# Somehow helps to prevent crashes on wake word streamin start, Bug only mitigated when this is in local yaml (compiler related?)
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
