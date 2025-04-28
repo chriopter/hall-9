@@ -127,7 +127,6 @@ speaker:
     id: mixing_speaker
     output_speaker: i2s_audio_speaker
     num_channels: 1
-    buffer_duration: 100ms
     source_speakers:
       - id: announcement_mixing_input
         timeout: never
