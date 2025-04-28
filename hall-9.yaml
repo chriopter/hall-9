@@ -239,7 +239,7 @@ voice_assistant:
     - media_player.play_media:
         id: sound_player
         media_id: error_sound
-        announcement: "true"
+        announcement: true
     - delay: 2s
     - micro_wake_word.start:
     
@@ -256,7 +256,7 @@ voice_assistant:
     - media_player.play_media:
         id: sound_player
         media_id: timer_finished_sound
-        announcement: "true"
+        announcement: true
     - light.turn_on:
         id: led_ww
         red: 100%
