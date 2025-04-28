@@ -463,6 +463,7 @@ font:
   - file: "https://raw.githubusercontent.com/chriopter/hall-9/main/assets/fonts/karla-medium.ttf"
     id: font1
     size: 46
+# Arial too big file wise for total flash size
 
 
 # Time configuration (using Home Assistant or NTP server)
