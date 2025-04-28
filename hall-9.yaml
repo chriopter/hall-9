@@ -112,8 +112,8 @@ voice_assistant:
   id: va
   microphone: va_mic
   # Main audio processing settings
-  noise_suppression_level: 2.0  # Range 0-4: Higher values reduce more background noise but may affect voice quality
-  volume_multiplier: 2.0  # Increases overall output volume - adjust based on your speaker setup
+  noise_suppression_level: 1.0  # Range 0-4: Higher values reduce more background noise but may affect voice quality
+  volume_multiplier: 3.0  # Increases overall output volume - adjust based on your speaker setup
   conversation_timeout: 30s  # How long to wait for next command before ending session
   
   # Voice detection and noise handling
