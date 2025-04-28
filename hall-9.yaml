@@ -201,10 +201,10 @@ media_player:
   - platform: speaker
     id: sound_player
     name: Sound Effects
-    internal: true
+    internal: false
     volume_increment: 0.05
     volume_min: 0.4
-    volume_max: 0.85
+    volume_max: 1.0
     announcement_pipeline:
       speaker: va_speaker
       format: FLAC
