@@ -16,14 +16,16 @@ esp32:
       CONFIG_MBEDTLS_SSL_PROTO_TLS1_3: "y"
 
 esphome:
-  name: hall-9
   on_boot:
-    - light.turn_on:
-        id: led_ww
-        blue: 100%
-        brightness: 60%
-        effect: fast pulse
-    - speaker.volume_set: 1.0
+    then:
+      - light.turn_on:
+          id: led_ww
+          blue: 100%
+          brightness: 60%
+          effect: fast pulse
+      - speaker.volume_set:
+          id: i2s_audio_speaker
+          volume: 1.0
 
 api:
   on_client_connected:
@@ -277,10 +279,10 @@ voice_assistant:
   volume_multiplier: 3.0  # Increases overall output volume - adjust based on your speaker setup
   conversation_timeout: 30s  # How long to wait for next command before ending session
   noise_suppression_level: 0
-  auto_gain: 0 dbfs
+  auto_gain: 0
   
   # Voice detection and noise handling
-  speaker: mixing_speaker
+  speaker: announcement_resampling_speaker
   
   on_start:
     - if:
