@@ -354,27 +354,27 @@ display:
             auto seconds_left = id(first_active_timer).seconds_left;
             int minutes = seconds_left / 60;
             int seconds = seconds_left % 60;
-            it.printf(0, 32, it.font(), "%02d:%02d", minutes, seconds);
-            it.print(0, 60, it.font(), "Timer");
+            it.printf(0, 32, id(font1), TextAlign::BASELINE_LEFT, "%02d:%02d", minutes, seconds);
+            it.printf(0, 60, id(font1), TextAlign::BASELINE_LEFT, "Timer");
           } else {
             // Print time in HH:MM format
-            it.strftime(0, 60, it.font(), "%H:%M", id(esptime).now());
+            it.strftime(0, 60, id(font1), TextAlign::BASELINE_LEFT, "%H:%M", id(esptime).now());
           }
       - id: show_thinking
         lambda: |-
-          it.print(0, 32, it.font(), "Hmm");
+          it.print(0, 32, id(font1), "Hmm");
       - id: show_hearing
         lambda: |-
-          it.print(0, 32, it.font(), "Ja?");
+          it.print(0, 32, id(font1), "Ja?");
       - id: show_answering
         lambda: |-
-          it.print(0, 32, it.font(), "...");
+          it.print(0, 32, id(font1), "...");
       - id: show_error
         lambda: |-
-          it.print(0, 32, it.font(), "Error");
+          it.print(0, 32, id(font1), "Error");
       - id: show_not_ready
         lambda: |-
-          it.print(0, 32, it.font(), "Wait");
+          it.print(0, 32, id(font1), "Wait");
 
 # Scripts for display and timer management
 script:
@@ -458,6 +458,12 @@ script:
             id(sound_player)
               ->play_file(sound_file, true, false);
           }
+
+font:
+  - file: "https://raw.githubusercontent.com/chriopter/hall-9/main/assets/fonts/karla-medium.ttf"
+    id: font1
+    size: 46
+
 
 # Time configuration (using Home Assistant or NTP server)
 time:
