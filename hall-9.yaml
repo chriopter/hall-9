@@ -354,27 +354,27 @@ display:
             auto seconds_left = id(first_active_timer).seconds_left;
             int minutes = seconds_left / 60;
             int seconds = seconds_left % 60;
-            it.printf(0, 32, "%02d:%02d", minutes, seconds);
-            it.print(0, 60, "Timer");
+            it.printf(0, 32, it.font(), "%02d:%02d", minutes, seconds);
+            it.print(0, 60, it.font(), "Timer");
           } else {
             // Print time in HH:MM format
-            it.strftime(0, 60, "%H:%M", id(esptime).now());
+            it.strftime(0, 60, it.font(), "%H:%M", id(esptime).now());
           }
       - id: show_thinking
         lambda: |-
-          it.print(0, 32, "Hmm");
+          it.print(0, 32, it.font(), "Hmm");
       - id: show_hearing
         lambda: |-
-          it.print(0, 32, "Ja?");
+          it.print(0, 32, it.font(), "Ja?");
       - id: show_answering
         lambda: |-
-          it.print(0, 32, "...");
+          it.print(0, 32, it.font(), "...");
       - id: show_error
         lambda: |-
-          it.print(0, 32, "Error");
+          it.print(0, 32, it.font(), "Error");
       - id: show_not_ready
         lambda: |-
-          it.print(0, 32, "Wait");
+          it.print(0, 32, it.font(), "Wait");
 
 # Scripts for display and timer management
 script:
