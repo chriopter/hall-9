@@ -206,7 +206,6 @@ voice_assistant:
   id: va
   microphone: va_mic
   # Main audio processing settings
-  noise_suppression_level: 3.0
   volume_multiplier: 3.0  # Increases overall output volume - adjust based on your speaker setup
   conversation_timeout: 30s  # How long to wait for next command before ending session
   
