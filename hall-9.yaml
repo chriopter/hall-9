@@ -73,6 +73,8 @@ microphone:
     pdm: false
     i2s_audio_id: i2s_in
     bits_per_sample: 32 bit
+    gain: 2.5  # Moderate gain to improve voice pickup
+    sigma_delta_oversample: 4  # Good balance of noise reduction and latency
     
 speaker:
     platform: i2s_audio
@@ -111,6 +113,11 @@ voice_assistant:
   noise_suppression_level: 2.0
   volume_multiplier: 2.0
   conversation_timeout: 30s
+  vad_threshold: 2
+  noise_gate_threshold: -85  # Slightly higher than default to reduce background noise
+  noise_gate_hold_ms: 300  # Longer hold time for better sentence detection
+  auto_gain: 24dB  # Good balance of amplification without distortion
+  dc_filter: true  # Remove constant background noise
   speaker: va_speaker
   on_tts_start:
     - light.turn_on:
