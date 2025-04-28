@@ -107,7 +107,6 @@ microphone:
     pdm: false      # INMP441 uses I2S not PDM
     i2s_audio_id: i2s_in
     bits_per_sample: 32 bit  # Maximum quality audio capture
-    buffer_duration: 100ms
     sample_rate: 16000  # Voice input at 16kHz, will be resampled to 48kHz
     
 speaker:
