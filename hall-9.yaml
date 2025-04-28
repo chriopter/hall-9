@@ -209,7 +209,7 @@ media_player:
       speaker: va_speaker
       format: FLAC
       num_channels: 1
-      sample_rate: 48000
+      # sample_rate: 48000 Use default
     files:
       - id: wake_word_sound
         file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/wake_word_triggered.flac
@@ -478,7 +478,7 @@ script:
           }
 
 font:
-  - file: "https://raw.githubusercontent.com/chriopter/hall-9/main/assets/fonts/arial-medium.ttf"
+  - file: "https://raw.githubusercontent.com/chriopter/hall-9/main/assets/fonts/arial.ttf"
     id: font1
     size: 46
 # Arial too big file wise for total flash size
