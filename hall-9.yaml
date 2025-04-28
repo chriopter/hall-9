@@ -108,8 +108,8 @@ micro_wake_word:
 voice_assistant:
   id: va
   microphone: va_mic
-  noise_suppression_level: 4.0
-  volume_multiplier: 1.0
+  noise_suppression_level: 2.0
+  volume_multiplier: 2.0
   conversation_timeout: 30s
   speaker: va_speaker
   on_tts_start:
