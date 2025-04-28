@@ -117,9 +117,6 @@ voice_assistant:
   conversation_timeout: 30s  # How long to wait for next command before ending session
   
   # Voice detection and noise handling
-  vad_threshold: 2  # Voice Activity Detection (0-3): 2 is balanced between sensitivity and false triggers
-  noise_gate_threshold: -85  # in dB (-95 to 0): Higher than default (-90) to better filter background noise
-  noise_gate_hold_ms: 300  # Keeps processing audio for 300ms after voice drops below threshold - helps catch full sentences
   auto_gain: 24dB  # Automatic gain control (0-31dB): 24dB provides good amplification without distortion
   dc_filter: true  # Removes constant background noise/hum from audio signal
   speaker: va_speaker
