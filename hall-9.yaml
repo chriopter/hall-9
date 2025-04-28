@@ -314,6 +314,12 @@ voice_assistant:
     - lambda: id(voice_assistant_phase) = id(voice_assist_replying_phase_id);
     - script.execute: draw_display
     
+  on_tts_end:
+    - delay: 500ms  # Give a small buffer for audio to complete playback
+    - lambda: id(voice_assistant_phase) = id(voice_assist_idle_phase_id);
+    - script.execute: draw_display
+    - voice_assistant.stop:
+    
   on_listening:
     - lambda: id(voice_assistant_phase) = id(voice_assist_listening_phase_id);
     - script.execute: draw_display
