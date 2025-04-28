@@ -117,7 +117,7 @@ voice_assistant:
   conversation_timeout: 30s  # How long to wait for next command before ending session
   
   # Voice detection and noise handling
-  auto_gain: 24  # Automatic gain control (0-31dB): 24dB provides good amplification without distortion
+  auto_gain: 24dBFS  # Automatic gain control (0-31dB): 24dB provides good amplification without distortion
   speaker: va_speaker
   on_tts_start:
     - light.turn_on:
