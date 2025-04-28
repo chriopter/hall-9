@@ -159,7 +159,7 @@ micro_wake_word:
           - media_player.play_media:
               id: sound_player
               media_id: wake_word_sound
-              announcement: "true"
+              announcement: true
     - light.turn_on:
         id: led_ww
         red: 30%
@@ -210,7 +210,7 @@ voice_assistant:
           - media_player.play_media:
               id: sound_player
               media_id: wake_word_sound
-              announcement: "true"
+              announcement: true
     - lambda: id(voice_assistant_phase) = id(voice_assist_waiting_phase_id);
     - script.execute: draw_display
     
