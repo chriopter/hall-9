@@ -284,12 +284,6 @@ voice_assistant:
   # Voice detection and noise handling
   speaker: announcement_resampling_speaker
   
-  # TTS pipeline configuration for server responses
-  tts_pipeline:
-    format: WAV  # Server typically sends WAV files
-    sample_rate: 22050  # Common TTS sample rate - adjust if needed
-    num_channels: 1
-  
   on_start:
     - if:
         condition:
