@@ -38,7 +38,7 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
 1. **ESP32 Deployment**
    - Create a standard config in ESPHome
    - Set `framework: esp-idf`
-   - Or look at factory.yaml
+   - Or look at factory.yaml -> Especially on Wifi Power for Board specific Bug
 
 2. **Packages**
    - Include packages from [hall-9_factory.yaml](hall-9_factory.yaml) or selectively by umcommenting

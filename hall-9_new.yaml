@@ -1,7 +1,3 @@
-wifi:
-  output_power: 8.5dB
-# Somehow helps to prevent crashes on wake word streamin start
-
 api:
   on_client_connected:
     then:
