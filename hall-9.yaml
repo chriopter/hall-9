@@ -107,10 +107,13 @@ microphone:
     pdm: false      # INMP441 uses I2S not PDM
     i2s_audio_id: i2s_in
     bits_per_sample: 32 bit  # Maximum quality audio capture
+    buffer_duration: 100ms
+    sample_rate: 16000  # Voice input at 16kHz, will be resampled to 48kHz
     
 speaker:
-    platform: i2s_audio
-    id: va_speaker
+  # Hardware speaker output
+  - platform: i2s_audio
+    id: i2s_audio_speaker
     i2s_audio_id: i2s_speaker
     dac_type: external    # MAX98357A is an external I2S DAC
     i2s_dout_pin: GPIO12  # DIN Pin of the MAX98357A Audio Amplifier
@@ -118,6 +121,33 @@ speaker:
     bits_per_sample: 16bit  # MAX98357A works best with 16-bit
     sample_rate: 48000    # Match FLAC file sample rate
     timeout: 500ms       # Time to wait for audio data before stopping playback
+    buffer_duration: 100ms
+
+  # Virtual speakers to combine the announcement and media streams together into one output
+  - platform: mixer
+    id: mixing_speaker
+    output_speaker: i2s_audio_speaker
+    num_channels: 1
+    buffer_duration: 100ms
+    source_speakers:
+      - id: announcement_mixing_input
+        timeout: never
+      - id: media_mixing_input
+        timeout: never
+
+  # Virtual speakers to resample each pipelines' audio
+  - platform: resampler
+    id: announcement_resampling_speaker
+    output_speaker: announcement_mixing_input
+    sample_rate: 48000
+    bits_per_sample: 16
+    buffer_duration: 100ms
+  - platform: resampler
+    id: media_resampling_speaker
+    output_speaker: media_mixing_input
+    sample_rate: 48000
+    bits_per_sample: 16
+    buffer_duration: 100ms
 
 # Voice Assistant
 
@@ -207,10 +237,33 @@ media_player:
     volume_min: 0.4
     volume_max: 1.0
     announcement_pipeline:
-      speaker: va_speaker
+      speaker: announcement_resampling_speaker
       format: FLAC
       num_channels: 1
       sample_rate: 48000
+    media_pipeline:
+      speaker: media_resampling_speaker
+      format: FLAC
+      num_channels: 1
+      sample_rate: 48000
+    on_announcement:
+      - mixer_speaker.apply_ducking:
+          id: media_mixing_input
+          decibel_reduction: 20
+          duration: 0.0s
+    on_state:
+      if:
+        condition:
+          and:
+            - not:
+                voice_assistant.is_running:
+            - not:
+                media_player.is_announcing:
+        then:
+          - mixer_speaker.apply_ducking:
+              id: media_mixing_input
+              decibel_reduction: 0
+              duration: 1.0s
     files:
       - id: wake_word_sound
         file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/wake_word_triggered.flac
@@ -229,7 +282,7 @@ voice_assistant:
   auto_gain: 0 dbfs
   
   # Voice detection and noise handling
-  speaker: va_speaker
+  speaker: mixing_speaker
   
   on_start:
     - if:
@@ -240,6 +293,10 @@ voice_assistant:
               id: play_sound
               priority: true
               sound_file: !lambda return id(wake_word_sound);
+    - mixer_speaker.apply_ducking:
+        id: media_mixing_input
+        decibel_reduction: 20
+        duration: 0.0s
     - lambda: id(voice_assistant_phase) = id(voice_assist_waiting_phase_id);
     - script.execute: draw_display
     
@@ -250,6 +307,10 @@ voice_assistant:
         green: 30%
         blue: 70%
         brightness: 60%
+    - mixer_speaker.apply_ducking:
+        id: media_mixing_input
+        decibel_reduction: 20
+        duration: 0.0s
     - lambda: id(voice_assistant_phase) = id(voice_assist_replying_phase_id);
     - script.execute: draw_display
     
@@ -277,6 +338,10 @@ voice_assistant:
     - wait_until:
         not:
           voice_assistant.is_running:
+    - mixer_speaker.apply_ducking:
+        id: media_mixing_input
+        decibel_reduction: 0
+        duration: 1.0s
     - micro_wake_word.start: 
     - lambda: id(voice_assistant_phase) = id(voice_assist_idle_phase_id);
     - script.execute: draw_display
