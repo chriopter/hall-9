@@ -139,8 +139,7 @@ speaker:
   - platform: resampler
     id: announcement_resampling_speaker
     output_speaker: announcement_mixing_input
-    sample_rate: 48000
-    input_sample_rate: 8000  # Force a very low input rate to slow down playback
+    sample_rate: 16000  # Explicitly set to 16kHz instead of 48kHz to slow down playback
     bits_per_sample: 16
     buffer_duration: 100ms
   - platform: resampler
@@ -241,7 +240,7 @@ media_player:
       speaker: announcement_resampling_speaker
       format: FLAC
       num_channels: 1
-      sample_rate: 48000
+      sample_rate: 16000  # Match the 16kHz rate we set for the resampler
     media_pipeline:
       speaker: media_resampling_speaker
       format: FLAC
