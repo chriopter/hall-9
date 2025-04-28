@@ -42,12 +42,15 @@ sensor:
 
  # Hardware 
 i2s_audio:
+  # I2S bus for INMP441 microphone input
   - id: i2s_in
-    i2s_lrclk_pin: GPIO8  #WS 
-    i2s_bclk_pin: GPIO2 #SCK
+    i2s_lrclk_pin: GPIO8  # Word Select (WS) pin - marks start of each audio sample
+    i2s_bclk_pin: GPIO2   # Bit Clock (SCK) pin - synchronizes data transfer
+  
+  # I2S bus for MAX98357A speaker output
   - id: i2s_speaker
-    i2s_lrclk_pin: GPIO10  #LRC 
-    i2s_bclk_pin: GPIO11 #BLCK
+    i2s_lrclk_pin: GPIO10  # Left/Right Clock (LRC) pin - same as WS for mono
+    i2s_bclk_pin: GPIO11   # Bit Clock (BCLK) pin - synchronizes data transfer
 
 i2c:
   sda: GPIO16
@@ -69,22 +72,22 @@ microphone:
     id: va_mic
     adc_type: external
     i2s_din_pin: GPIO4 #SD pin on the INMP441
-    channel: left
-    pdm: false
+    channel: left    # INMP441 outputs mono audio on left channel
+    pdm: false      # INMP441 uses I2S not PDM
     i2s_audio_id: i2s_in
-    bits_per_sample: 32 bit
-    gain: 2.5  # Moderate gain to improve voice pickup
-    sigma_delta_oversample: 4  # Good balance of noise reduction and latency
+    bits_per_sample: 32 bit  # Maximum quality audio capture
+    gain: 2.5  # Amplifies input signal - 2.5 provides good voice pickup without distortion
+    sigma_delta_oversample: 4  # Higher values reduce noise but increase latency - 4 is a good balance
     
 speaker:
     platform: i2s_audio
     id: va_speaker
     i2s_audio_id: i2s_speaker
-    dac_type: external
-    i2s_dout_pin: GPIO12   #  DIN Pin of the MAX98357A Audio Amplifier
-    channel: mono
-    bits_per_sample: 32bit
-    timeout: 500ms
+    dac_type: external    # MAX98357A is an external I2S DAC
+    i2s_dout_pin: GPIO12  # DIN Pin of the MAX98357A Audio Amplifier
+    channel: mono         # MAX98357A outputs mono audio
+    bits_per_sample: 32bit  # Maximum quality audio output
+    timeout: 500ms       # Time to wait for audio data before stopping playback
 
 # Voice Assistant
 
@@ -110,14 +113,17 @@ micro_wake_word:
 voice_assistant:
   id: va
   microphone: va_mic
-  noise_suppression_level: 2.0
-  volume_multiplier: 2.0
-  conversation_timeout: 30s
-  vad_threshold: 2
-  noise_gate_threshold: -85  # Slightly higher than default to reduce background noise
-  noise_gate_hold_ms: 300  # Longer hold time for better sentence detection
-  auto_gain: 24dB  # Good balance of amplification without distortion
-  dc_filter: true  # Remove constant background noise
+  # Main audio processing settings
+  noise_suppression_level: 2.0  # Range 0-4: Higher values reduce more background noise but may affect voice quality
+  volume_multiplier: 2.0  # Increases overall output volume - adjust based on your speaker setup
+  conversation_timeout: 30s  # How long to wait for next command before ending session
+  
+  # Voice detection and noise handling
+  vad_threshold: 2  # Voice Activity Detection (0-3): 2 is balanced between sensitivity and false triggers
+  noise_gate_threshold: -85  # in dB (-95 to 0): Higher than default (-90) to better filter background noise
+  noise_gate_hold_ms: 300  # Keeps processing audio for 300ms after voice drops below threshold - helps catch full sentences
+  auto_gain: 24dB  # Automatic gain control (0-31dB): 24dB provides good amplification without distortion
+  dc_filter: true  # Removes constant background noise/hum from audio signal
   speaker: va_speaker
   on_tts_start:
     - light.turn_on:
