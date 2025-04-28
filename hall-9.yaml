@@ -140,6 +140,7 @@ speaker:
     id: announcement_resampling_speaker
     output_speaker: announcement_mixing_input
     sample_rate: 48000
+    input_sample_rate: 8000  # Force a very low input rate to slow down playback
     bits_per_sample: 16
     buffer_duration: 100ms
   - platform: resampler
