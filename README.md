@@ -82,3 +82,9 @@ Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configur
 - Design a new case
 - Timer
 - Mic Settings
+
+---
+
+# 🎵 Credits
+
+- Sound files (wake word, timer, error) are used via URL reference from [ESPHome's voice project](https://github.com/esphome/home-assistant-voice-pe) under MIT license
