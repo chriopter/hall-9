@@ -192,16 +192,6 @@ media_player:
       - id: error_sound
         file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/error_cloud_expired.mp3
 
-# Wake word sound toggle
-switch:
-  - platform: template
-    id: wake_sound
-    name: Wake sound
-    icon: "mdi:bullhorn"
-    entity_category: config
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_ON
-
 voice_assistant:
   id: va
   microphone: va_mic
@@ -330,6 +320,14 @@ switch:
       - delay: 2s
       - light.turn_off:
           id: led_ww
+  - platform: template
+    id: wake_sound
+    name: Wake sound
+    icon: "mdi:bullhorn"
+    entity_category: config
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
           
 display:
   - platform: ssd1306_i2c
