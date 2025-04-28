@@ -25,7 +25,7 @@ esphome:
           effect: fast pulse
       - speaker.volume_set:
           id: i2s_audio_speaker
-          volume: 3.0
+          volume: 1.0
 
 api:
   on_client_connected:
