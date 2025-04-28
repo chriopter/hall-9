@@ -478,7 +478,7 @@ script:
           }
 
 font:
-  - file: "https://raw.githubusercontent.com/chriopter/hall-9/main/assets/fonts/karla-medium.ttf"
+  - file: "https://raw.githubusercontent.com/chriopter/hall-9/main/assets/fonts/arial-medium.ttf"
     id: font1
     size: 46
 # Arial too big file wise for total flash size
