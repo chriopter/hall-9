@@ -1,4 +1,18 @@
 # Quirk to output sound to alexa (need to define tts_target manually)
+# 
+# IMPORTANT: This file needs configuration to work properly:
+# 
+# 1. Define tts_target in your main configuration file:
+#    substitutions:
+#      tts_target: "Your_Alexa_Device_Name"  # Replace with your actual Alexa device name
+#
+# 2. WARNING: This on_tts_start section will OVERRIDE (not merge with) any existing
+#    on_tts_start section in your main configuration.
+#
+# 3. RECOMMENDED APPROACH: Instead of using this package, copy this service call into
+#    your existing on_tts_start section in hall-9.yaml to maintain all other functionality
+#    (LED control, mixer ducking, display updates, etc.)
+#
 voice_assistant:
   on_tts_start:
     - homeassistant.service:
