@@ -150,8 +150,11 @@ globals:
 micro_wake_word:
   id: mww
   models:
-    - model: https://github.com/kahrendt/microWakeWord/releases/download/okay_nabu_20241226.3/okay_nabu.json
+    - model:
+        url: https://github.com/kahrendt/microWakeWord/releases/download/okay_nabu_20241226.3/okay_nabu.json
   vad:
+    model:
+      url: https://github.com/esphome/micro-wake-word-models/raw/main/models/v2/vad.json
   microphone: va_mic
   on_wake_word_detected:
     - if:
@@ -161,7 +164,7 @@ micro_wake_word:
           - script.execute:
               id: play_sound
               priority: true
-              sound_file: !lambda return id(wake_word_triggered_sound);
+              sound_file: !lambda return id(wake_word_sound);
           - delay: 300ms
     - light.turn_on:
         id: led_ww
@@ -215,7 +218,7 @@ voice_assistant:
           - script.execute:
               id: play_sound
               priority: true
-              sound_file: !lambda return id(wake_word_triggered_sound);
+              sound_file: !lambda return id(wake_word_sound);
     - lambda: id(voice_assistant_phase) = id(voice_assist_waiting_phase_id);
     - script.execute: draw_display
     
@@ -443,14 +446,14 @@ script:
     then:
       - lambda: |-
           if (priority) {
-            id(external_media_player)
+            id(sound_player)
               ->make_call()
               .set_command(media_player::MediaPlayerCommand::MEDIA_PLAYER_COMMAND_STOP)
               .set_announcement(true)
               .perform();
           }
-          if ( (id(external_media_player).state != media_player::MediaPlayerState::MEDIA_PLAYER_STATE_ANNOUNCING ) || priority) {
-            id(external_media_player)
+          if ( (id(sound_player).state != media_player::MediaPlayerState::MEDIA_PLAYER_STATE_ANNOUNCING ) || priority) {
+            id(sound_player)
               ->play_file(sound_file, true, false);
           }
 
