@@ -279,7 +279,7 @@ voice_assistant:
   volume_multiplier: 3.0  # Increases overall output volume - adjust based on your speaker setup
   conversation_timeout: 30s  # How long to wait for next command before ending session
   noise_suppression_level: 0
-  auto_gain: 0
+  auto_gain: 0 dbfs
   
   # Voice detection and noise handling
   speaker: announcement_resampling_speaker
