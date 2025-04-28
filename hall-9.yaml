@@ -152,9 +152,11 @@ micro_wake_word:
   models:
     - model:
         url: https://github.com/kahrendt/microWakeWord/releases/download/okay_nabu_20241226.3/okay_nabu.json
+        type: http
   vad:
     model:
       url: https://github.com/esphome/micro-wake-word-models/raw/main/models/v2/vad.json
+      type: http
   microphone: va_mic
   on_wake_word_detected:
     - if:
