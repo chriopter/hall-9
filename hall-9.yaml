@@ -168,7 +168,7 @@ micro_wake_word:
         brightness: 60%
         effect: "pulse"
     - voice_assistant.start:
-        wake_word: !lambda return wake_word;
+        wake_word: wake_word
     
 # Media player for sound effects
 media_player:
