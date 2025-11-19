@@ -4,7 +4,7 @@
 - **Objective**: Achieve offline STT/TTS with a wake-word on an ESP32-S3
 
 Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configuration and the [/assets/case](assets/case/) folder for case files.
-<img width="1788" height="1132" alt="image" src="https://github.com/user-attachments/assets/8c23c71a-9603-4ab7-8da8-5640f7a1c8d2" />
+<img width="300"  alt="image" src="https://github.com/user-attachments/assets/8c23c71a-9603-4ab7-8da8-5640f7a1c8d2" />
 
 ---
 
