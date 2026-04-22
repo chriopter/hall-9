@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+> Superseded by [`chriopter/hall-9`](https://github.com/chriopter/hall-9).
+> This repository is kept as the legacy codebase.
+
 # 1. Overview
 
 - **hall-9**: Local LLM integration with Home Assistant & ESPHome
