@@ -2,8 +2,7 @@
 
 Local voice assistant for Home Assistant, running on ESPHome with Hall-9 hardware.
 
-- Local/offline STT/TTS with wake word on ESP32-S3
-- Legacy project history: [`chriopter/hall-9-legacy`](https://github.com/chriopter/hall-9-legacy)
+Local/offline STT/TTS with wake word on ESP32-S3.
 
 ## Hardware
 
