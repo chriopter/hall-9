@@ -1,12 +1,20 @@
-# SSD1306 status display driven by voice_assistant_phase.
-# Depends on: i2c bus (declared in hall-9.yaml), time id `esptime`, and the
-# `on_listening` / `on_stt_end` / `on_tts_start` / `on_end` handlers in the
-# voice_assistant block that call `script.execute: draw_display`.
+# SSD1306 status display driven by voice_assistant_phase and timer state.
+# Depends on: i2c bus + voice_assistant id `va` (declared in hall-9.yaml).
+# The VA block calls `script.execute: draw_display` on its lifecycle hooks.
 
 globals:
   - id: voice_assistant_phase
     type: int
     initial_value: '1'
+
+  - id: first_active_timer
+    type: voice_assistant::Timer
+    restore_value: false
+
+  - id: is_timer_active
+    type: bool
+    restore_value: false
+    initial_value: 'false'
 
 font:
   - file: "assets/fonts/arial.ttf"
@@ -33,15 +41,50 @@ display:
       - id: show_answering
         lambda: |-
           it.print(0, 0, id(font1), "...");
+      - id: show_timer
+        lambda: |-
+          uint32_t s = id(first_active_timer).seconds_left;
+          char buf[8];
+          snprintf(buf, sizeof(buf), "%02d:%02d", s / 60, s % 60);
+          it.print(0, 60, id(font1), TextAlign::BASELINE_LEFT, buf);
 
 script:
+  - id: fetch_first_active_timer
+    then:
+      - lambda: |-
+          const auto &timers = id(va).get_timers();
+          if (timers.empty()) return;
+          auto output_timer = *timers.begin();
+          for (const auto &timer : timers) {
+            if (timer.is_active && timer.seconds_left <= output_timer.seconds_left) {
+              output_timer = timer;
+            }
+          }
+          id(first_active_timer) = output_timer;
+
+  - id: check_if_timers_active
+    then:
+      - lambda: |-
+          const auto &timers = id(va).get_timers();
+          bool active = false;
+          for (const auto &timer : timers) {
+            if (timer.is_active) {
+              active = true;
+            }
+          }
+          id(is_timer_active) = active;
+
   - id: draw_display
     then:
-      - lambda: |
-          switch(id(voice_assistant_phase)) {
-            case 1: id(onboard_display).show_page(show_time); break;
-            case 2: id(onboard_display).show_page(show_hearing); break;
-            case 3: id(onboard_display).show_page(show_thinking); break;
-            case 4: id(onboard_display).show_page(show_answering); break;
+      - lambda: |-
+          if (id(is_timer_active)) {
+            id(onboard_display).show_page(show_timer);
+          } else {
+            switch(id(voice_assistant_phase)) {
+              case 1: id(onboard_display).show_page(show_time); break;
+              case 2: id(onboard_display).show_page(show_hearing); break;
+              case 3: id(onboard_display).show_page(show_thinking); break;
+              case 4: id(onboard_display).show_page(show_answering); break;
+            }
           }
           id(onboard_display).update();
