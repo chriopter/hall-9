@@ -1,95 +1,128 @@
-> [!IMPORTANT]
-> Superseded by [`chriopter/hall-9`](https://github.com/chriopter/hall-9).
-> This repository is kept as the legacy codebase.
+# hall-9
 
-# 1. Overview
+Hall-9 is a Home Assistant and ESPHome voice device project built as a fork of [esphome/home-assistant-voice-pe](https://github.com/esphome/home-assistant-voice-pe) and adapted for Hall-9 hardware.
 
-- **hall-9**: Local LLM integration with Home Assistant & ESPHome
-- **Objective**: Achieve offline STT/TTS with a wake-word on an ESP32-S3
+The current Hall-9 configuration keeps the upstream Voice PE structure where practical and only patches the hardware-specific parts needed for the Hall-9 board.
 
-Repo primarily contains the [hall-9.yaml](hall-9.yaml) file for ESPHome configuration and the [/assets/case](assets/case/) folder for case files.
-<img width="300"  alt="image" src="https://github.com/user-attachments/assets/8c23c71a-9603-4ab7-8da8-5640f7a1c8d2" />
+- Objective: robust local/offline STT/TTS with wake word on ESP32-S3 hardware
+- Base firmware: Home Assistant Voice Preview Edition
+- Legacy project history: [`chriopter/hall-9-legacy`](https://github.com/chriopter/hall-9-legacy)
 
----
+## Hardware
 
-<details>
-  <summary>🔧 Building the Device</summary>
+<img width="300" alt="Hall-9 hardware" src="assets/hardware/hall-9-hardware.png" />
 
-### **Hardware Parts**
+### Hardware Parts
 
-- **ESP32-S3** (local wake-word detection capable)
-- **MAX98357** Amplifier + **Speaker** (4 Ω / 8 Ω)
-- **INMP441** Microphone
-- **SSD1306** Display
-- **LD2410** Radar (optional)
-- **DHT22** Thermometer (optional)
+- ESP32-S3
+- MAX98357 amplifier + speaker (4 Ohm / 8 Ohm)
+- INMP441 microphone
+- SSD1306 display
+- LD2410 radar (optional)
+- DHT22 thermometer (optional)
 
-### **Bench Case**
+### Bench Case
 
-- Use the bench case available in the [/assets/case](assets/case/) folder during development
+- Use the bench case in `assets/case/` during development
 
-### **Wiring**
+### Wiring
 
-- Follow the pinout from the `hall-9.yaml` configuration
-- Provide **5 V** for MAX98357 (some ESP32-S3 boards supply this directly)
+- Follow the pinout from the Hall-9 configuration
+- Provide 5 V for the MAX98357; some ESP32-S3 boards can supply this directly
+- If your board cannot switch or supply the amplifier cleanly, add a small transistor stage for the amp power/enable path
 
-</details>
+## Install
 
-<details>
-  <summary>⚙️ Install ESP32</summary>
+Use this minimal ESPHome package stub in Home Assistant or the ESPHome Device Builder:
 
-### **ESPHome Setup**
+```yaml
+substitutions:
+  device_name: hall-9-device
+  device_friendly_name: Hall 9 Device
+  device_name_add_mac_suffix: "false"
 
-1. **ESP32 Deployment**
-   - Create a standard config in ESPHome
-   - Set `framework: esp-idf`
-   - Or look at factory.yaml -> Especially on Wifi Power for Board specific Bug
+packages:
+  hall9:
+    url: https://github.com/chriopter/hall-9
+    ref: dev
+    file: hall-9.yaml
 
-2. **Packages**
-   - Include packages from [hall-9_factory.yaml](hall-9_factory.yaml) or selectively by umcommenting
-   - Changes are automatically pulled by ESPHome upon updating
+api:
+  encryption:
+    key: "YOUR_API_KEY"
 
-3. **Speech End Detection**
-   - Set to “aggressive” to reduce latency
+ota:
+  - platform: esphome
+    password: "YOUR_OTA_PASSWORD"
 
-</details>
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
 
-<details>
-  <summary>📡 Prepare Home Assistant Voice Pipeline</summary>
+  ap:
+    ssid: "Hall-9 Fallback Hotspot"
+    password: "YOUR_FALLBACK_PASSWORD"
 
-### **Home Assistant Voice Pipeline**
+captive_portal:
+```
 
-1. **Whisper (STT) & Piper (TTS)**
-   - Install add-ons
-   - Configure both via Wyoming
-   - Piper: Set Noise Scale to 0
-   - Maybe run Whisper externally if applicable
+This package targets the ESP-IDF framework through the included Hall-9 configuration; do not switch it to Arduino.
 
-(Optionall) **External Whisper**
-   -Choose Model (https://github.com/openai/whisper#available-models-and-languages)
-   - Example  'docker run -it -p 10300:10300 -v /Users/chriopter/whisper-server:/data rhasspy/wyoming-whisper --model base --language de --beam-size 2 --initial-prompt "nachfolgend ist eine deutsche Untehraltung zur Steuerung eines Smart Homesystems. Wörter wie Licht, Rolladen und ähnliches werden verwendet."'
+## Development
 
+Local compile via the official ESPHome Docker image — no Python/ESPHome install needed.
 
-2. **LLM of Choice**
-   - Example: Ollama (networked) or ChatGPT
-   - Integrate via Add-On
+1. Create `secrets.yaml` in the repo root (gitignored):
 
-3. **Assistant Pipeline**
-   - Configure in Home Assistant
-   - Reference Whisper & Piper
+   ```yaml
+   wifi_ssid: "YourSSID"
+   wifi_password: "YourPassword"
+   ```
 
-</details>
+2. Create a local wrapper, e.g. `hall-9.local.yaml` (gitignored), that includes the package locally so your in-tree edits get picked up:
 
----
+   ```yaml
+   substitutions:
+     device_name: hall-9-device
+     device_friendly_name: Hall 9 Device
+     device_name_add_mac_suffix: "false"
 
-# 🚀 Future To-Dos
+   packages:
+     hall9: !include hall-9.yaml
 
-- Design a new case
-- Timer
-- Mic Settings
+   api:
+     encryption:
+       key: "REPLACE_WITH_BASE64_KEY"
 
----
+   ota:
+     - platform: esphome
+       password: "REPLACE_WITH_OTA_PASSWORD"
 
-# 🎵 Credits
+   wifi:
+     ssid: !secret wifi_ssid
+     password: !secret wifi_password
+     ap:
+       ssid: "Hall-9 Fallback Hotspot"
+       password: "REPLACE_WITH_AP_PASSWORD"
 
-- Sound files (wake word, timer, error) are used via URL reference from [ESPHome's voice project](https://github.com/esphome/home-assistant-voice-pe) under MIT license
+   captive_portal:
+   ```
+
+3. Compile:
+
+   ```bash
+   docker run --rm -v "$PWD":/config -it ghcr.io/esphome/esphome compile hall-9.local.yaml
+   ```
+
+   Flash via USB (replace the device path):
+
+   ```bash
+   docker run --rm --device=/dev/ttyACM0 -v "$PWD":/config -it ghcr.io/esphome/esphome run hall-9.local.yaml
+   ```
+
+First run pulls the ESP-IDF toolchain (~2–3 GB). Build artifacts land in `.esphome/` (gitignored).
+
+## Credits
+
+- Forked from [`esphome/home-assistant-voice-pe`](https://github.com/esphome/home-assistant-voice-pe); this repository builds on the upstream Home Assistant Voice Preview Edition firmware and keeps its license terms.
+- Licensed according to the upstream Home Assistant Voice Preview Edition project; see `LICENSE`.
