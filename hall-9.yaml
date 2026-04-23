@@ -103,11 +103,14 @@ switch:
       - light.turn_off: led_ww
       # Force display back to clock. Do NOT call update() from a lambda here —
       # that races with the I2C bus during audio playback and crashes SSD1306.
-      # Only flip the page pointer; the 2 s auto-interval re-renders it.
+      # Only flip the page pointer; the 500 ms auto-interval re-renders it.
       - lambda: |-
           id(is_timer_active) = false;
           id(voice_assistant_phase) = 1;
           id(onboard_display).show_page(show_time);
+      # Re-arm wake-word detection — the media_player announcement pipeline
+      # can leave MWW inference paused after the ring ends.
+      - micro_wake_word.start:
 
   - platform: template
     id: mute
@@ -276,6 +279,15 @@ media_player:
 
 # --- Voice Assistant ---
 micro_wake_word:
+  # Default is true — MWW stops inference after every detection, which leaves
+  # the device deaf after saying "Stop" to dismiss a timer. Voice PE sets this
+  # to false so MWW keeps listening continuously.
+  stop_after_detection: false
+  # 4× software gain on the mic stream before wake-word inference: better
+  # detection from across the room / quieter speakers (same as Voice PE).
+  microphone:
+    microphone: va_mic
+    gain_factor: 4
   models:
     - model: okay_nabu
     - model: hey_jarvis
