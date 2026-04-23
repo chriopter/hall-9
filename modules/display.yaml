@@ -1,6 +1,7 @@
-# SSD1306 status display driven by voice_assistant_phase and timer state.
+# SSD1306 status display: single page whose lambda reads voice_assistant_phase
+# + timer state on every render tick and draws the appropriate content.
+# No show_page() switching — every 500 ms the display re-reads state.
 # Depends on: i2c bus + voice_assistant id `va` (declared in hall-9.yaml).
-# The VA block calls `script.execute: draw_display` on its lifecycle hooks.
 
 globals:
   - id: voice_assistant_phase
@@ -17,9 +18,20 @@ globals:
     initial_value: 'false'
 
 font:
-  - file: "assets/fonts/arial.ttf"
-    id: font1
-    size: 46
+  # Tabular digits + bpp:1 give crisp, fixed-width time/timer rendering with
+  # no anti-aliased dithering (SSD1306 is 1-bit — no grayscale).
+  - file: "gfonts://Roboto Mono"
+    id: font_mono
+    size: 40
+    bpp: 1
+  - file: "assets/fonts/karla-medium.ttf"
+    id: font_lg
+    size: 54
+    bpp: 1
+  - file: "assets/fonts/karla-medium.ttf"
+    id: font_md
+    size: 28
+    bpp: 1
 
 display:
   - platform: ssd1306_i2c
@@ -28,25 +40,31 @@ display:
     rotation: 0
     address: 0x3C
     update_interval: 500ms
-    pages:
-      - id: show_time
-        lambda: |-
-          it.strftime(0, 60, id(font1), TextAlign::BASELINE_LEFT, "%H:%M", id(esptime).now());
-      - id: show_hearing
-        lambda: |-
-          it.print(0, 0, id(font1), "Ja?");
-      - id: show_thinking
-        lambda: |-
-          it.print(0, 0, id(font1), "Hmm");
-      - id: show_answering
-        lambda: |-
-          it.print(0, 0, id(font1), "...");
-      - id: show_timer
-        lambda: |-
-          uint32_t s = id(first_active_timer).seconds_left;
-          char buf[8];
-          snprintf(buf, sizeof(buf), "%02d:%02d", s / 60, s % 60);
-          it.print(0, 60, id(font1), TextAlign::BASELINE_LEFT, buf);
+    lambda: |-
+      if (id(is_timer_active)) {
+        uint32_t s = id(first_active_timer).seconds_left;
+        char buf[8];
+        snprintf(buf, sizeof(buf), "%02d:%02d", s / 60, s % 60);
+        it.print(64, 32, id(font_mono), TextAlign::CENTER, buf);
+        return;
+      }
+      switch (id(voice_assistant_phase)) {
+        case 2:
+          it.print(64, 32, id(font_lg), TextAlign::CENTER, "Ja?");
+          return;
+        case 3:
+          it.print(64, 32, id(font_lg), TextAlign::CENTER, "Hmm");
+          return;
+        case 4:
+          it.print(64, 32, id(font_lg), TextAlign::CENTER, "...");
+          return;
+      }
+      auto t = id(esptime).now();
+      if (t.is_valid()) {
+        it.strftime(64, 32, id(font_mono), TextAlign::CENTER, "%H:%M", t);
+      } else {
+        it.print(64, 32, id(font_mono), TextAlign::CENTER, "--:--");
+      }
 
 script:
   - id: fetch_first_active_timer
@@ -74,20 +92,3 @@ script:
           }
           id(is_timer_active) = active;
 
-  - id: draw_display
-    then:
-      - lambda: |-
-          if (id(is_timer_active)) {
-            id(onboard_display).show_page(show_timer);
-          } else {
-            switch(id(voice_assistant_phase)) {
-              case 1: id(onboard_display).show_page(show_time); break;
-              case 2: id(onboard_display).show_page(show_hearing); break;
-              case 3: id(onboard_display).show_page(show_thinking); break;
-              case 4: id(onboard_display).show_page(show_answering); break;
-            }
-          }
-          // NOTE: do not call id(onboard_display).update() from here —
-          // calling it from an automation context races with the display
-          // render loop and crashes SSD1306::fill. The 500 ms auto-interval
-          // will pick up the page change quickly enough.

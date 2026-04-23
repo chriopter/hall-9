@@ -107,7 +107,6 @@ switch:
       - lambda: |-
           id(is_timer_active) = false;
           id(voice_assistant_phase) = 1;
-          id(onboard_display).show_page(show_time);
       # Re-arm wake-word detection — the media_player announcement pipeline
       # can leave MWW inference paused after the ring ends.
       - micro_wake_word.start:
@@ -170,8 +169,13 @@ number:
 
 button:
   - platform: restart
-    name: "ESP32 Restart"
-    id: but_rest
+    name: "Restart"
+
+  - platform: safe_mode
+    name: "Restart (Safe Mode)"
+
+  - platform: factory_reset
+    name: "Factory Reset"
 
   - platform: template
     name: "Trigger Voice Assistant"
@@ -323,22 +327,21 @@ voice_assistant:
   id: va
   microphone: va_mic
   speaker: va_speaker
-  # Wake word is managed externally by the micro_wake_word component — this
+  # Wake word is managed externally by the micro_wake_word component; this
   # keeps VA's internal state machine from blocking at RESPONSE_FINISHED.
   use_wake_word: false
   noise_suppression_level: 0
   auto_gain: 0 dbfs
   volume_multiplier: 1.0
   conversation_timeout: 30s
-  on_tts_start:
-    - light.turn_on:
-        id: led_ww
-        red: 30%
-        green: 30%
-        blue: 70%
-        brightness: 60%
-    - lambda: id(voice_assistant_phase) = 4;
-    - script.execute: draw_display
+
+  # Duck announcements (timer chime etc.) while VA is active so TTS is clear.
+  on_start:
+    - mixer_speaker.apply_ducking:
+        id: announcement_mixing_input
+        decibel_reduction: 20
+        duration: 0s
+
   on_listening:
     - light.turn_on:
         id: led_ww
@@ -347,50 +350,57 @@ voice_assistant:
         blue: 70%
         brightness: 60%
     - lambda: id(voice_assistant_phase) = 2;
-    - script.execute: draw_display
   on_stt_end:
-    - lambda: id(voice_assistant_phase) = 3;
-    - script.execute: draw_display
     - light.turn_off: led_ww
-  # Fires when TTS audio playback actually finishes (Event 99). Reset the UI
-  # + re-arm wake-word here, not on on_tts_end (which fires right when the TTS
-  # URL is received — before any sound plays).
+    - lambda: id(voice_assistant_phase) = 3;
+  on_tts_start:
+    - light.turn_on:
+        id: led_ww
+        red: 30%
+        green: 30%
+        blue: 70%
+        brightness: 60%
+    - lambda: id(voice_assistant_phase) = 4;
+
+  # on_tts_end fires when HA delivers the TTS URL — BEFORE audio starts.
+  # on_tts_stream_end (Event 99) fires when audio playback actually finishes.
+  # Use the latter as the UI reset point.
   on_tts_stream_end:
     - light.turn_off: led_ww
     - lambda: id(voice_assistant_phase) = 1;
-    - script.execute: draw_display
     - micro_wake_word.start:
+
   on_error:
     - light.turn_off: led_ww
     - lambda: id(voice_assistant_phase) = 1;
-    - script.execute: draw_display
     - micro_wake_word.start:
-  # on_end fires when the VA pipeline finishes (Event 2) — this happens while
-  # the TTS audio is still playing. Do not reset the UI here; on_tts_stream_end
-  # is the correct hook for "speaking is actually done". Only re-arm wake-word
-  # here in case on_tts_stream_end never fires (empty TTS, error path).
+
+  # on_end fires when the VA pipeline finishes (Event 2) while TTS audio is
+  # still playing. Do not reset the UI here — only unduck + re-arm wake word.
   on_end:
+    - mixer_speaker.apply_ducking:
+        id: announcement_mixing_input
+        decibel_reduction: 0
+        duration: 1s
     - micro_wake_word.start:
+
+  # Timer state mirrors into `is_timer_active` + `first_active_timer` globals
+  # so the display lambda can render them.
   on_timer_started:
     - script.execute: check_if_timers_active
     - script.execute: fetch_first_active_timer
-    - script.execute: draw_display
   on_timer_updated:
     - script.execute: check_if_timers_active
     - script.execute: fetch_first_active_timer
-    - script.execute: draw_display
   on_timer_tick:
     - script.execute: check_if_timers_active
     - script.execute: fetch_first_active_timer
-    - script.execute: draw_display
   on_timer_cancelled:
     - script.execute: check_if_timers_active
-    - script.execute: draw_display
   on_timer_finished:
     - lambda: |-
         id(is_timer_active) = false;
         id(voice_assistant_phase) = 1;
-        id(onboard_display).show_page(show_time);
     - switch.turn_on: timer_ringing
 
 time:
