@@ -127,4 +127,5 @@ Optional hardware (DHT22, SSD1306 display) is wired via `packages:` in `hall-9.y
 
 ## Credits
 
-Inspired by [esphome/home-assistant-voice-pe](https://github.com/esphome/home-assistant-voice-pe) — Home Assistant Voice Preview Edition.
+- Inspired by [esphome/home-assistant-voice-pe](https://github.com/esphome/home-assistant-voice-pe) — Home Assistant Voice Preview Edition.
+- `sounds/timer_finished.flac` © 2024 [Clayton Charles Tapp](https://www.cctaudio.com/), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), originally from Home Assistant Voice Preview Edition. See `sounds/LICENSE.md`.
