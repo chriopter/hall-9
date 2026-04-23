@@ -1,0 +1,47 @@
+# SSD1306 status display driven by voice_assistant_phase.
+# Depends on: i2c bus (declared in hall-9.yaml), time id `esptime`, and the
+# `on_listening` / `on_stt_end` / `on_tts_start` / `on_end` handlers in the
+# voice_assistant block that call `script.execute: draw_display`.
+
+globals:
+  - id: voice_assistant_phase
+    type: int
+    initial_value: '1'
+
+font:
+  - file: "assets/fonts/arial.ttf"
+    id: font1
+    size: 46
+
+display:
+  - platform: ssd1306_i2c
+    id: onboard_display
+    model: "SSD1306 128x64"
+    rotation: 0
+    address: 0x3C
+    update_interval: 2s
+    pages:
+      - id: show_time
+        lambda: |-
+          it.strftime(0, 60, id(font1), TextAlign::BASELINE_LEFT, "%H:%M", id(esptime).now());
+      - id: show_hearing
+        lambda: |-
+          it.print(0, 0, id(font1), "Ja?");
+      - id: show_thinking
+        lambda: |-
+          it.print(0, 0, id(font1), "Hmm");
+      - id: show_answering
+        lambda: |-
+          it.print(0, 0, id(font1), "...");
+
+script:
+  - id: draw_display
+    then:
+      - lambda: |
+          switch(id(voice_assistant_phase)) {
+            case 1: id(onboard_display).show_page(show_time); break;
+            case 2: id(onboard_display).show_page(show_hearing); break;
+            case 3: id(onboard_display).show_page(show_thinking); break;
+            case 4: id(onboard_display).show_page(show_answering); break;
+          }
+          id(onboard_display).update();
