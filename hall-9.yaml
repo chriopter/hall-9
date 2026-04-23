@@ -27,6 +27,21 @@ psram:
   mode: octal
   speed: 80MHz
 
+# Apply the persisted speaker_volume slider value once components are up.
+# `set_action` on the number does not fire on boot when restoring state.
+# Also force-disable the stop wake-word model on boot — ESPHome persists the
+# enabled state to flash, so "stop" could stay armed after a timer ring.
+esphome:
+  on_boot:
+    priority: -100
+    then:
+      - speaker.volume_set:
+          id: hw_speaker
+          volume: !lambda |-
+            float x = id(speaker_volume).state;
+            return x <= 0.0f ? 0.0f : pow(x, 0.15f);
+      - micro_wake_word.disable_model: stop_model
+
 logger:
 
 api:
@@ -68,6 +83,33 @@ switch:
     internal: true
 
   - platform: template
+    id: timer_ringing
+    optimistic: true
+    internal: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      - light.turn_on:
+          id: led_ww
+          effect: "timer_ring"
+      - micro_wake_word.enable_model: stop_model
+      - script.execute: timer_ring_timeout
+      - script.execute: ring_timer_loop
+    on_turn_off:
+      - script.stop: timer_ring_timeout
+      - script.stop: ring_timer_loop
+      - media_player.stop:
+          id: announcement_media_player
+      - micro_wake_word.disable_model: stop_model
+      - light.turn_off: led_ww
+      # Force display back to clock. Do NOT call update() from a lambda here —
+      # that races with the I2C bus during audio playback and crashes SSD1306.
+      # Only flip the page pointer; the 2 s auto-interval re-renders it.
+      - lambda: |-
+          id(is_timer_active) = false;
+          id(voice_assistant_phase) = 1;
+          id(onboard_display).show_page(show_time);
+
+  - platform: template
     id: mute
     name: Mute
     optimistic: true
@@ -84,20 +126,25 @@ switch:
       - micro_wake_word.start:
       - light.turn_off: led_ww
 
-binary_sensor:
-  - platform: gpio
-    id: center_button
-    name: "Center Button"
-    pin:
-      number: GPIO1
-      inverted: true
-      mode:
-        input: true
-        pullup: true
-    filters:
-      - delayed_on: 20ms
-    on_press:
-      - voice_assistant.start:
+script:
+  - id: timer_ring_timeout
+    mode: restart
+    then:
+      - delay: 2min
+      - switch.turn_off: timer_ringing
+
+  - id: ring_timer_loop
+    mode: restart
+    then:
+      - while:
+          condition:
+            switch.is_on: timer_ringing
+          then:
+            - media_player.speaker.play_on_device_media_file:
+                id: announcement_media_player
+                media_file: timer_finished_sound
+                announcement: true
+            - delay: 4s
 
 number:
   - platform: template
@@ -112,9 +159,11 @@ number:
     step: 0.05
     initial_value: 0.7
     set_action:
+      # Perceptual loudness curve (pow 0.15): linear sliders feel flat because
+      # hearing is logarithmic. 0.5 maps to ~0.9 real volume.
       - speaker.volume_set:
           id: hw_speaker
-          volume: !lambda "return x;"
+          volume: !lambda "return x <= 0.0f ? 0.0f : pow(x, 0.15f);"
 
 button:
   - platform: restart
@@ -146,6 +195,18 @@ light:
     num_leds: 1
     chipset: ws2812
     name: "Status LED"
+    effects:
+      - strobe:
+          name: "timer_ring"
+          colors:
+            - state: true
+              red: 100%
+              green: 0%
+              blue: 0%
+              brightness: 100%
+              duration: 400ms
+            - state: false
+              duration: 400ms
 
 microphone:
   - platform: i2s_audio
@@ -159,9 +220,9 @@ microphone:
     i2s_audio_id: i2s_in
 
 speaker:
-  # Hardware I2S speaker at 48 kHz 32-bit, kept continuously clocked
-  # (`timeout: never`). The mixer upstream ensures this is fed with silence
-  # between TTS bursts so the I2S DMA never underruns.
+  # Voice-PE-style audio chain. Finite `timeout: 500ms` everywhere (not
+  # `never`) so the VA state machine can observe "speaker idle" and transition
+  # back to IDLE after TTS.
   - platform: i2s_audio
     id: hw_speaker
     i2s_audio_id: i2s_speaker
@@ -170,12 +231,9 @@ speaker:
     channel: mono
     sample_rate: 48000
     bits_per_sample: 32bit
-    timeout: never
+    timeout: 500ms
     buffer_duration: 100ms
 
-  # Mixer combines the VA TTS resampler output with a silent keep-alive
-  # source so hw_speaker is fed continuously. task_stack_in_psram moves the
-  # mixer FreeRTOS stack off internal SRAM.
   - platform: mixer
     id: mixing_speaker
     output_speaker: hw_speaker
@@ -183,31 +241,71 @@ speaker:
     task_stack_in_psram: true
     source_speakers:
       - id: va_mixing_input
-        timeout: never
-      - id: silence_mixing_input
-        timeout: never
+        timeout: 500ms
+      - id: announcement_mixing_input
+        timeout: 500ms
 
-  # Resampler upsamples VA's native 16 kHz TTS to 48 kHz for the mixer.
+  # VA TTS path: resamples 16 kHz → 48 kHz into the mixer.
   - platform: resampler
     id: va_speaker
     output_speaker: va_mixing_input
     sample_rate: 48000
     bits_per_sample: 16
 
+  # Announcement path: plays audio files (timer chime, etc.) through the
+  # speaker_source media_player below, parallel to VA.
+  - platform: resampler
+    id: announcement_speaker
+    output_speaker: announcement_mixing_input
+    sample_rate: 48000
+    bits_per_sample: 16
+
+audio_file:
+  - id: timer_finished_sound
+    file: sounds/timer_finished.flac
+
+media_player:
+  - platform: speaker
+    id: announcement_media_player
+    name: "Announcement Player"
+    announcement_pipeline:
+      format: FLAC
+      num_channels: 1
+      sample_rate: 48000
+      speaker: announcement_speaker
+
 # --- Voice Assistant ---
 micro_wake_word:
   models:
-    - model: github://esphome/micro-wake-word-models/models/v2/okay_nabu.json
-    - model: github://esphome/micro-wake-word-models/models/v2/hey_jarvis.json
+    - model: okay_nabu
+    - model: hey_jarvis
+    # Stop model is disabled by default and enabled only while a timer rings,
+    # so "stop" dismisses the timer without triggering wake word otherwise.
+    # Sourced from kahrendt/microWakeWord (not in esphome/micro-wake-word-models).
+    - model: https://github.com/kahrendt/microWakeWord/releases/download/stop/stop.json
+      id: stop_model
+      internal: true
   on_wake_word_detected:
-    - voice_assistant.start:
-        wake_word: !lambda return wake_word;
-    - light.turn_on:
-        id: led_ww
-        red: 30%
-        green: 30%
-        blue: 70%
-        brightness: 60%
+    - if:
+        condition:
+          # Manifest-defined wake_word string (capital "S" per stop.json).
+          lambda: return wake_word == "Stop";
+        then:
+          # "stop" only dismisses an active timer; never starts VA.
+          - if:
+              condition:
+                switch.is_on: timer_ringing
+              then:
+                - switch.turn_off: timer_ringing
+        else:
+          - voice_assistant.start:
+              wake_word: !lambda return wake_word;
+          - light.turn_on:
+              id: led_ww
+              red: 30%
+              green: 30%
+              blue: 70%
+              brightness: 60%
 
 voice_assistant:
   id: va
@@ -230,6 +328,12 @@ voice_assistant:
     - lambda: id(voice_assistant_phase) = 4;
     - script.execute: draw_display
   on_listening:
+    - light.turn_on:
+        id: led_ww
+        red: 30%
+        green: 30%
+        blue: 70%
+        brightness: 60%
     - lambda: id(voice_assistant_phase) = 2;
     - script.execute: draw_display
   on_stt_end:
@@ -249,11 +353,11 @@ voice_assistant:
     - lambda: id(voice_assistant_phase) = 1;
     - script.execute: draw_display
     - micro_wake_word.start:
-  # Backup reset for the natural IDLE transition, if VA transitions cleanly.
+  # on_end fires when the VA pipeline finishes (Event 2) — this happens while
+  # the TTS audio is still playing. Do not reset the UI here; on_tts_stream_end
+  # is the correct hook for "speaking is actually done". Only re-arm wake-word
+  # here in case on_tts_stream_end never fires (empty TTS, error path).
   on_end:
-    - light.turn_off: led_ww
-    - lambda: id(voice_assistant_phase) = 1;
-    - script.execute: draw_display
     - micro_wake_word.start:
   on_timer_started:
     - script.execute: check_if_timers_active
@@ -271,8 +375,11 @@ voice_assistant:
     - script.execute: check_if_timers_active
     - script.execute: draw_display
   on_timer_finished:
-    - script.execute: check_if_timers_active
-    - script.execute: draw_display
+    - lambda: |-
+        id(is_timer_active) = false;
+        id(voice_assistant_phase) = 1;
+        id(onboard_display).show_page(show_time);
+    - switch.turn_on: timer_ringing
 
 time:
   - platform: homeassistant
