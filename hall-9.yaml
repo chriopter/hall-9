@@ -5,7 +5,7 @@ packages:
 esp32:
   board: esp32-s3-devkitc-1
   variant: esp32s3
-  flash_size: 8MB
+  flash_size: 16MB
   framework:
     type: esp-idf
     version: recommended
@@ -18,9 +18,13 @@ esp32:
       CONFIG_BT_BLE_DYNAMIC_ENV_MEMORY: "y"
       CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC: "y"
       CONFIG_MBEDTLS_SSL_PROTO_TLS1_3: "y"
+      # N16R8: code + rodata live in 80 MHz octal PSRAM so internal SRAM stays
+      # free for audio/WiFi tasks — Voice PE-style.
+      CONFIG_SPIRAM_RODATA: "y"
+      CONFIG_SPIRAM_FETCH_INSTRUCTIONS: "y"
 
 psram:
-  mode: quad
+  mode: octal
   speed: 80MHz
 
 logger:
@@ -95,6 +99,23 @@ binary_sensor:
     on_press:
       - voice_assistant.start:
 
+number:
+  - platform: template
+    id: speaker_volume
+    name: "Speaker Volume"
+    icon: mdi:volume-high
+    mode: slider
+    optimistic: true
+    restore_value: true
+    min_value: 0.0
+    max_value: 1.0
+    step: 0.05
+    initial_value: 0.7
+    set_action:
+      - speaker.volume_set:
+          id: hw_speaker
+          volume: !lambda "return x;"
+
 button:
   - platform: restart
     name: "ESP32 Restart"
@@ -138,19 +159,40 @@ microphone:
     i2s_audio_id: i2s_in
 
 speaker:
-  # Direct I2S speaker at TTS native 16 kHz. 16-bit matches MAX98357 native
-  # format (half the I2S bandwidth vs 32-bit). `timeout: never` keeps the I2S
-  # clocks running continuously; the stack lives in PSRAM to free SRAM.
+  # Hardware I2S speaker at 48 kHz 32-bit, kept continuously clocked
+  # (`timeout: never`). The mixer upstream ensures this is fed with silence
+  # between TTS bursts so the I2S DMA never underruns.
   - platform: i2s_audio
-    id: va_speaker
+    id: hw_speaker
     i2s_audio_id: i2s_speaker
     dac_type: external
     i2s_dout_pin: GPIO12
     channel: mono
-    sample_rate: 16000
-    bits_per_sample: 16bit
+    sample_rate: 48000
+    bits_per_sample: 32bit
     timeout: never
-    buffer_duration: 500ms
+    buffer_duration: 100ms
+
+  # Mixer combines the VA TTS resampler output with a silent keep-alive
+  # source so hw_speaker is fed continuously. task_stack_in_psram moves the
+  # mixer FreeRTOS stack off internal SRAM.
+  - platform: mixer
+    id: mixing_speaker
+    output_speaker: hw_speaker
+    num_channels: 1
+    task_stack_in_psram: true
+    source_speakers:
+      - id: va_mixing_input
+        timeout: never
+      - id: silence_mixing_input
+        timeout: never
+
+  # Resampler upsamples VA's native 16 kHz TTS to 48 kHz for the mixer.
+  - platform: resampler
+    id: va_speaker
+    output_speaker: va_mixing_input
+    sample_rate: 48000
+    bits_per_sample: 16
 
 # --- Voice Assistant ---
 micro_wake_word:
@@ -171,14 +213,13 @@ voice_assistant:
   id: va
   microphone: va_mic
   speaker: va_speaker
+  # Wake word is managed externally by the micro_wake_word component — this
+  # keeps VA's internal state machine from blocking at RESPONSE_FINISHED.
+  use_wake_word: false
   noise_suppression_level: 0
   auto_gain: 0 dbfs
-  volume_multiplier: 0.7
+  volume_multiplier: 1.0
   conversation_timeout: 30s
-  # Pause wake-word detection during an active conversation so the CPU can
-  # keep the I2S speaker fed (Hall-9 quad PSRAM is slower than Voice PE's octal).
-  on_start:
-    - micro_wake_word.stop:
   on_tts_start:
     - light.turn_on:
         id: led_ww
@@ -195,16 +236,25 @@ voice_assistant:
     - lambda: id(voice_assistant_phase) = 3;
     - script.execute: draw_display
     - light.turn_off: led_ww
-  on_error:
-    - micro_wake_word.start:
-  on_end:
+  # Fires when TTS audio playback actually finishes (Event 99). Reset the UI
+  # + re-arm wake-word here, not on on_tts_end (which fires right when the TTS
+  # URL is received — before any sound plays).
+  on_tts_stream_end:
     - light.turn_off: led_ww
-    - wait_until:
-        not:
-          voice_assistant.is_running:
-    - micro_wake_word.start:
     - lambda: id(voice_assistant_phase) = 1;
     - script.execute: draw_display
+    - micro_wake_word.start:
+  on_error:
+    - light.turn_off: led_ww
+    - lambda: id(voice_assistant_phase) = 1;
+    - script.execute: draw_display
+    - micro_wake_word.start:
+  # Backup reset for the natural IDLE transition, if VA transitions cleanly.
+  on_end:
+    - light.turn_off: led_ww
+    - lambda: id(voice_assistant_phase) = 1;
+    - script.execute: draw_display
+    - micro_wake_word.start:
   on_timer_started:
     - script.execute: check_if_timers_active
     - script.execute: fetch_first_active_timer
